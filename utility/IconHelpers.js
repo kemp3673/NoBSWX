@@ -54,12 +54,13 @@ const icons = {
   dust: fog,
   mist: fog,
   tsra_sct: thunderstorms,
+  tsra_hi: thunderstorms,
   rain_showers: rain,
   rain: rain,
 };
 
 /* isDayTime is in forecast data  (at least for weekly)*/
-export const getIcon = (url) => {
+export const getIcon = (url, night) => {
   // Split the url to grab the last part of the url
   let urlSplit = url.split("/");
   let urlEnd = urlSplit[urlSplit.length - 1];
@@ -70,5 +71,10 @@ export const getIcon = (url) => {
   } else {
     iconString = urlEnd.split("?")[0];
   }
-  return icons[iconString];
+  // URL for current conditions does not specify night with 'n' so we need to add it
+  if (night) {
+    return icons["n" + iconString] || icons[iconString];
+  } else {
+    return icons[iconString];
+  }
 };

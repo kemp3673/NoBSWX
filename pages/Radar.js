@@ -2,6 +2,9 @@ import React, { useState, useEffect, useContext } from "react";
 import { StyleSheet, View, Text, Image, Platform } from "react-native";
 import MapView, { UrlTile, Marker } from "react-native-maps";
 
+// Styles
+import { RadarStyles } from "../styles/styles";
+
 // Context
 import { WeatherContext } from "../App";
 
@@ -204,9 +207,9 @@ export default function Radar() {
 
   const { x, y } = getTileCoords(zoomLevel, center);
   return (
-    <View style={styles.container}>
+    <View style={RadarStyles.container}>
       <MapView
-        style={styles.map}
+        style={RadarStyles.map}
         region={{
           latitude: location.latitude,
           longitude: location.longitude,
@@ -253,24 +256,3 @@ export default function Radar() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  map: {
-    ...StyleSheet.absoluteFillObject,
-    borderWidth: 1,
-    borderColor: "black",
-  },
-  zoomLevel: {
-    position: "absolute",
-    bottom: 20,
-    left: 20,
-    backgroundColor: "white",
-    padding: 8,
-    borderRadius: 8,
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-});

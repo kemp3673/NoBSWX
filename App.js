@@ -1,14 +1,10 @@
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { NavigationContainer } from "@react-navigation/native";
-import {
-  SafeAreaView,
-  View,
-  Text,
-  StyleSheet,
-  StatusBar,
-  Image,
-} from "react-native";
+import { SafeAreaView, View, Text, StatusBar, Image } from "react-native";
 import React, { useState, useEffect, createContext } from "react";
+
+// Styles
+import { AppStyles } from "./styles/styles";
 
 // Helpers
 import { getWXData, getWeatherStation } from "./utility/WeatherHelpers";
@@ -27,8 +23,8 @@ export default function App() {
   const [localForecastUrl, setLocalForecastUrl] = useState(null);
   const [hourlyForecastUrl, setHourlyForecastUrl] = useState(null);
   const [location, setLocation] = useState({
-    latitude: 38.9072,
-    longitude: -77.0369,
+    latitude: 36.5313,
+    longitude: -87.3537,
   });
   const [zone, setZone] = useState(null);
   const [relativeLocation, setRelativeLocation] = useState({
@@ -55,10 +51,10 @@ export default function App() {
 
   // Add splash screen until data is loaded
   return tempSplash ? (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+    <View style={AppStyles.splashContainer}>
       <Image
         source={require("./assets/weatherSplash.gif")}
-        style={{ height: "100%", width: "100%", resizeMode: "cover" }}
+        style={AppStyles.splashImage}
       />
     </View>
   ) : (
@@ -77,30 +73,14 @@ export default function App() {
       <SafeAreaView style={{ flex: 1 }}>
         <StatusBar style="auto" />
         <MyTabs />
-        <View style={styles.footer}>
-          <Text
-            style={{
-              color: "white",
-              fontSize: 8,
-            }}
-          >
-            Data Sourced from NOAA
-          </Text>
+        <View style={AppStyles.footer}>
+          <Text style={AppStyles.footerText}>Data Sourced from NOAA</Text>
           <Image
             source={require("./assets/noaa-logo.png")}
-            style={{ height: 20, resizeMode: "contain" }}
+            style={AppStyles.footerImg}
           />
         </View>
       </SafeAreaView>
     </WeatherContext.Provider>
   );
 }
-
-const styles = StyleSheet.create({
-  footer: {
-    backgroundColor: "#012f47",
-    height: 40,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});

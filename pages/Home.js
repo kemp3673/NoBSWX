@@ -13,6 +13,9 @@ import {
   ImageBackground,
 } from "react-native";
 
+// Styles
+import { homeStyles } from "../styles/styles";
+
 // Context
 import { WeatherContext } from "../App";
 
@@ -71,141 +74,57 @@ export default function Home() {
             ? "https://images.unsplash.com/photo-1505673542670-a5e3ff5b14a3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"
             : "https://images.unsplash.com/photo-1580737061343-bb08ed1a4e8a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=735&q=80",
         }}
-        style={styles.currentWrapper}
+        style={homeStyles.currentWrapper}
       >
-        <View style={styles.innerWrapper}>
+        <View style={homeStyles.innerWrapper}>
           <View>
-            <Text
-              style={{ color: "white", fontSize: 72, padding: 10 }}
-              allowFontScaling={false}
-            >
+            <Text style={homeStyles.currentTemp} allowFontScaling={false}>
               {convertTemp(currentObserved.temperature.value)}
             </Text>
           </View>
-          <Text
-            style={{ color: "white", fontSize: 42, padding: 10 }}
-            allowFontScaling={false}
-          >
+          <Text style={homeStyles.currentDescription} allowFontScaling={false}>
             {currentObserved.textDescription}
           </Text>
           <Image
-            style={{
-              height: 100,
-              width: 100,
-              resizeMode: "contain",
-            }}
-            source={getIcon(currentObserved.icon)}
+            style={homeStyles.currentIcon}
+            source={getIcon(currentObserved.icon, context.isNight)}
             alt="weather icon"
           />
-          <Text
-            style={{
-              fontWeight: "bold",
-              color: "white",
-              padding: 10,
-              fontSize: 18,
-            }}
-            allowFontScaling={false}
-          >
+          <Text style={homeStyles.time} allowFontScaling={false}>
             {currentTime()}
           </Text>
-          <Text
-            style={{ color: "white", fontSize: 18, paddingBottom: 10 }}
-            allowFontScaling={false}
-          >
+          <Text style={homeStyles.boldText} allowFontScaling={false}>
             {relativeLocation.city}, {relativeLocation.state}
           </Text>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: 10,
-              width: "100%",
-            }}
-          >
-            <Text
-              style={{
-                color: "white",
-                fontSize: 24,
-              }}
-              allowFontScaling={false}
-            >
+          <View style={homeStyles.conditionsWrapper}>
+            <Text style={homeStyles.text} allowFontScaling={false}>
               Visibility
             </Text>
-            <Text
-              style={{
-                fontWeight: "bold",
-                color: "white",
-                fontSize: 24,
-              }}
-              allowFontScaling={false}
-            >
+            <Text style={homeStyles.boldText} allowFontScaling={false}>
               {convertKM(currentObserved.visibility.value)} miles
             </Text>
           </View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: 10,
-              width: "100%",
-            }}
-          >
-            <Text
-              style={{ color: "white", fontSize: 24 }}
-              allowFontScaling={false}
-            >
+          <View style={homeStyles.conditionsWrapper}>
+            <Text style={homeStyles.text} allowFontScaling={false}>
               Wind Speed
             </Text>
-            <Text
-              style={{ fontWeight: "bold", fontSize: 24, color: "white" }}
-              allowFontScaling={false}
-            >
+            <Text style={homeStyles.boldText} allowFontScaling={false}>
               {convertKM(currentObserved.windSpeed.value)} mph
             </Text>
           </View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: 10,
-              width: "100%",
-            }}
-          >
-            <Text
-              style={{ color: "white", fontSize: 24 }}
-              allowFontScaling={false}
-            >
+          <View style={homeStyles.conditionsWrapper}>
+            <Text style={homeStyles.text} allowFontScaling={false}>
               Wind Direction
             </Text>
-            <Text
-              style={{ color: "white", fontWeight: "bold", fontSize: 24 }}
-              allowFontScaling={false}
-            >
+            <Text style={homeStyles.boldText} allowFontScaling={false}>
               {convertDirection(currentObserved.windDirection.value)}
             </Text>
           </View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: 10,
-              width: "100%",
-            }}
-          >
-            <Text
-              style={{ color: "white", fontSize: 24 }}
-              allowFontScaling={false}
-            >
+          <View style={homeStyles.conditionsWrapper}>
+            <Text style={homeStyles.text} allowFontScaling={false}>
               Humidity
             </Text>
-            <Text
-              style={{ color: "white", fontWeight: "bold", fontSize: 24 }}
-              allowFontScaling={false}
-            >
+            <Text style={homeStyles.boldText} allowFontScaling={false}>
               {currentObserved.relativeHumidity.value.toFixed(2)}%
             </Text>
           </View>
@@ -214,28 +133,9 @@ export default function Home() {
     );
   } else {
     return (
-      <View style={styles.currentWrapper}>
+      <View style={homeStyles.currentWrapper}>
         <Text>Loading Current Weather...</Text>
       </View>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  currentWrapper: {
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-    height: "100%",
-    resizeMode: "cover",
-  },
-  innerWrapper: {
-    backgroundColor: "rgba(0,0,0,0.6)",
-    padding: 50,
-    borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-    height: "100%",
-  },
-});

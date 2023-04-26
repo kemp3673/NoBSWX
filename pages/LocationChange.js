@@ -12,35 +12,23 @@ import {
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 
+// Styles
+import { locationStyles } from "../styles/styles";
+
 export default function LocationChange() {
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [zipCode, setZipCode] = useState("");
-
-  console.log("LocationChange.js ran");
 
   return (
     <ImageBackground
       source={{
         uri: "https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=735&q=80",
       }}
-      style={{
-        alignContent: "center",
-        textAlign: "center",
-        height: "100%",
-        width: "100%",
-      }}
+      style={locationStyles.background}
     >
-      <View
-        style={{
-          flexDirection: "column",
-          height: "100%",
-          justifyContent: "space-between",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <View
+      <View style={locationStyles.container}>
+        {/* <View
           style={{
             flexDirection: "column",
             alignItems: "center",
@@ -58,15 +46,7 @@ export default function LocationChange() {
             Enter City and State
           </Text>
           <TextInput
-            style={{
-              width: "80%",
-              margin: 10,
-              borderColor: "white",
-              borderWidth: 1,
-              backgroundColor: "rgba(255,255,255,0.8)",
-              borderRadius: 5,
-              padding: 5,
-            }}
+            style={styles.input}
             type="text"
             textContentType="addressCity"
             placeholder="Enter City"
@@ -74,14 +54,7 @@ export default function LocationChange() {
             value={city}
           />
           <TextInput
-            style={{
-              width: "80%",
-              borderColor: "white",
-              borderWidth: 1,
-              backgroundColor: "rgba(255,255,255,0.8)",
-              borderRadius: 5,
-              padding: 5,
-            }}
+            style={styles.input}
             type="text"
             textContentType="addressState"
             placeholder="Enter State ex. 'TN'"
@@ -89,16 +62,9 @@ export default function LocationChange() {
             maxLength={2}
             value={state}
           />
-        </View>
-        <View
-          style={{
-            flexDirection: "column",
-            justifyContent: "space-between",
-            alignItems: "center",
-            width: "100%",
-          }}
-        >
-          <Text
+        </View> */}
+        <View style={locationStyles.queryWrapper}>
+          {/* <Text
             style={{
               color: "white",
               margin: 10,
@@ -107,20 +73,10 @@ export default function LocationChange() {
             }}
           >
             OR
-          </Text>
-          <Text style={{ color: "white", fontSize: 20, fontWeight: "bold" }}>
-            Enter ZipCode
-          </Text>
+          </Text> */}
+          <Text style={locationStyles.label}>Enter ZipCode</Text>
           <TextInput
-            style={{
-              width: "80%",
-              margin: 10,
-              borderColor: "white",
-              borderWidth: 1,
-              backgroundColor: "rgba(255,255,255,0.8)",
-              borderRadius: 5,
-              padding: 5,
-            }}
+            style={locationStyles.input}
             type="postal-code"
             textContentType="postalCode"
             autoComplete="postal-code"
@@ -139,57 +95,15 @@ export default function LocationChange() {
             console.log("Submit Pressed");
           }}
         />
-        <View
-          style={{
-            flexDirection: "column",
-            justifyContent: "space-between",
-            alignItems: "center",
-            width: "100%",
-          }}
-        >
-          <View
-            style={{
-              height: 2,
-              backgroundColor: "white",
-              margin: 10,
-              width: "80%",
-            }}
-          />
-          <Text
-            style={{
-              color: "white",
-              margin: 10,
-              fontSize: 20,
-              fontWeight: "bold",
-            }}
-          >
-            Saved Locations
-          </Text>
-          <ScrollView
-            style={{
-              maxHeight: 200,
-            }}
-          >
+        <View style={locationStyles.savedContainer}>
+          <View style={locationStyles.divider} />
+          <Text style={locationStyles.label}>Saved Locations</Text>
+          <ScrollView style={locationStyles.savedScroll}>
             {/* Will be a FlatList once data is saved */}
-            <View
-              style={{
-                flexDirection: "column",
-                justifyContent: "space-between",
-                alignItems: "center",
-                width: "100%",
-              }}
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  width: "60%",
-                  padding: 5,
-                }}
-              >
+            <View style={locationStyles.savedWrapper}>
+              <View style={locationStyles.location}>
                 <Text
-                  style={{ color: "white", fontSize: 16 }}
+                  style={locationStyles.text}
                   onPress={() => {
                     console.log("Nashville pressed");
                   }}
@@ -205,17 +119,9 @@ export default function LocationChange() {
                   }}
                 />
               </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  width: "60%",
-                  padding: 5,
-                }}
-              >
+              <View style={locationStyles.location}>
                 <Text
-                  style={{ color: "white", fontSize: 16 }}
+                  style={locationStyles.text}
                   onPress={() => {
                     console.log("Franklin pressed");
                   }}
@@ -231,17 +137,9 @@ export default function LocationChange() {
                   }}
                 />
               </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  width: "60%",
-                  padding: 5,
-                }}
-              >
+              <View style={locationStyles.location}>
                 <Text
-                  style={{ color: "white", fontSize: 16 }}
+                  style={locationStyles.text}
                   onPress={() => {
                     console.log("Brentwood pressed");
                   }}
