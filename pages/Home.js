@@ -21,6 +21,7 @@ import {
   getWeatherStation,
   getCurrentConditions,
 } from "../utility/WeatherHelpers";
+import { getIcon } from "../utility/IconHelpers";
 
 import {
   nightCheck,
@@ -92,10 +93,8 @@ export default function Home() {
               height: 100,
               width: 100,
               resizeMode: "contain",
-              borderWidth: 1,
-              borderColor: "black",
             }}
-            source={{ uri: currentObserved.icon }}
+            source={getIcon(currentObserved.icon)}
             alt="weather icon"
           />
           <Text
@@ -115,14 +114,24 @@ export default function Home() {
           >
             {relativeLocation.city}, {relativeLocation.state}
           </Text>
-          <Text
+          <View
             style={{
-              color: "white",
-              fontSize: 24,
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 10,
+              width: "100%",
             }}
-            allowFontScaling={false}
           >
-            Visibility{" "}
+            <Text
+              style={{
+                color: "white",
+                fontSize: 24,
+              }}
+              allowFontScaling={false}
+            >
+              Visibility
+            </Text>
             <Text
               style={{
                 fontWeight: "bold",
@@ -133,43 +142,73 @@ export default function Home() {
             >
               {convertKM(currentObserved.visibility.value)} miles
             </Text>
-          </Text>
-          <Text
-            style={{ color: "white", fontSize: 24, padding: 10 }}
-            allowFontScaling={false}
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 10,
+              width: "100%",
+            }}
           >
-            Wind Speed{" "}
             <Text
-              style={{ fontWeight: "bold", fontSize: 24 }}
+              style={{ color: "white", fontSize: 24 }}
+              allowFontScaling={false}
+            >
+              Wind Speed
+            </Text>
+            <Text
+              style={{ fontWeight: "bold", fontSize: 24, color: "white" }}
               allowFontScaling={false}
             >
               {convertKM(currentObserved.windSpeed.value)} mph
             </Text>
-          </Text>
-          <Text
-            style={{ color: "white", fontSize: 24, paddingBottom: 10 }}
-            allowFontScaling={false}
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 10,
+              width: "100%",
+            }}
           >
-            Wind Direction{" "}
             <Text
-              style={{ fontWeight: "bold", fontSize: 24 }}
+              style={{ color: "white", fontSize: 24 }}
+              allowFontScaling={false}
+            >
+              Wind Direction
+            </Text>
+            <Text
+              style={{ color: "white", fontWeight: "bold", fontSize: 24 }}
               allowFontScaling={false}
             >
               {convertDirection(currentObserved.windDirection.value)}
             </Text>
-          </Text>
-          <Text
-            style={{ color: "white", fontSize: 24 }}
-            allowFontScaling={false}
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 10,
+              width: "100%",
+            }}
           >
-            Humidity{" "}
             <Text
-              style={{ fontWeight: "bold", fontSize: 24 }}
+              style={{ color: "white", fontSize: 24 }}
+              allowFontScaling={false}
+            >
+              Humidity
+            </Text>
+            <Text
+              style={{ color: "white", fontWeight: "bold", fontSize: 24 }}
               allowFontScaling={false}
             >
               {currentObserved.relativeHumidity.value.toFixed(2)}%
             </Text>
-          </Text>
+          </View>
         </View>
       </ImageBackground>
     );

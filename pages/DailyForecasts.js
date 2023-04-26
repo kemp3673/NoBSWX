@@ -14,6 +14,7 @@ import { WeatherContext } from "../App";
 // Helpers
 import { getForecast } from "../utility/WeatherHelpers";
 import { convertDate, hiLo } from "../utility/OtherHelpers";
+import { getIcon } from "../utility/IconHelpers";
 
 export default function DailyForecasts() {
   const context = useContext(WeatherContext);
@@ -104,10 +105,8 @@ export default function DailyForecasts() {
                       style={{
                         height: 50,
                         width: 50,
-                        borderWidth: 1,
-                        borderColor: "black",
                       }}
-                      source={{ uri: item.icon }}
+                      source={getIcon(item.icon)}
                       alt="image"
                     />
                   </View>

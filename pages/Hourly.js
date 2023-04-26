@@ -15,6 +15,7 @@ import { WeatherContext } from "../App";
 // Helpers
 import { getHourlyForecast } from "../utility/WeatherHelpers";
 import { convertTime } from "../utility/OtherHelpers";
+import { getIcon } from "../utility/IconHelpers";
 
 export default function Hourly() {
   const context = useContext(WeatherContext);
@@ -97,13 +98,8 @@ export default function Hourly() {
                     style={{
                       height: 50,
                       width: 50,
-                      borderWidth: 1,
-                      borderColor: "black",
-                      backgroundColor: "#2b2b2b",
                     }}
-                    source={{
-                      uri: item.icon,
-                    }}
+                    source={getIcon(item.icon)}
                     alt="image"
                   />
                 </View>
