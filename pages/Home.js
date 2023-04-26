@@ -32,6 +32,7 @@ import {
   convertKM,
   currentTime,
   convertDirection,
+  convertMeters,
 } from "../utility/OtherHelpers";
 
 export default function Home() {
@@ -101,7 +102,7 @@ export default function Home() {
               Visibility
             </Text>
             <Text style={homeStyles.boldText} allowFontScaling={false}>
-              {convertKM(currentObserved.visibility.value)} miles
+              {convertMeters(currentObserved.visibility.value)} miles
             </Text>
           </View>
           <View style={homeStyles.conditionsWrapper}>

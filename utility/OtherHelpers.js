@@ -49,7 +49,12 @@ export const convertTemp = (temp) => {
 
 // Convert wind speed from km to miles
 export const convertKM = (kilometers) => {
-  return `${Math.round(kilometers * 0.000621371).toFixed(2)}`;
+  console.log(kilometers);
+  return `${Math.round(kilometers * 0.621371).toFixed(2)}`;
+};
+
+export const convertMeters = (meters) => {
+  return `${Math.round(meters * 0.000621371192).toFixed(2)}`;
 };
 
 // Convert wind direction from degrees to cardinal direction
