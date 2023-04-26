@@ -94,13 +94,12 @@ export const locationStyles = StyleSheet.create({
   container: {
     flexDirection: "column",
     height: "100%",
-    justifyContent: "space-between",
-    alignItems: "center",
     justifyContent: "center",
+    alignItems: "center",
   },
   queryWrapper: {
     flexDirection: "column",
-    justifyContent: "space-between",
+    justifyContent: "center",
     alignItems: "center",
     width: "100%",
   },

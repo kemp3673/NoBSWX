@@ -178,24 +178,13 @@ const getTileCoords = (zoom, center) => {
 };
 
 export default function Radar() {
-  const context = useContext(WeatherContext);
-
-  const [precipitationUrl, setPrecipitationUrl] = useState(null);
-  const [cloudsUrl, setCloudsUrl] = useState(null);
   const [zoomLevel, setZoomLevel] = useState(0);
   const [center, setCenter] = useState({ latitude: 0, longitude: 0 });
 
+  const context = useContext(WeatherContext);
   location = context.location || { latitude: 40.7128, longitude: -74.006 };
-
-  // Do I really need this?
-  useEffect(() => {
-    setPrecipitationUrl(
-      `https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=${k}`
-    );
-    setCloudsUrl(
-      `https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=${k}`
-    );
-  }, []);
+  const precipitationUrl = `https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=${k}`;
+  const cloudsUrl = `https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=${k}`;
 
   const handleRegionChange = (region) => {
     const { latitude, longitude, latitudeDelta } = region;
