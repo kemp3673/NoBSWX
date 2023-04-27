@@ -9,13 +9,36 @@ export const convertTime = (timeCode) => {
     "Friday",
     "Saturday",
   ];
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
   const date = new Date(timeCode);
   const day = date.getDay();
+  const month = date.getMonth();
+  const year = date.getFullYear();
+  const numDate = date.getDate();
   const timeString = date.toLocaleTimeString([], {
     hour: "2-digit",
     minute: "2-digit",
   });
-  return { day: daysOfWeek[day], time: timeString };
+  return {
+    day: daysOfWeek[day],
+    time: timeString,
+    date: numDate,
+    month: monthNames[month],
+    year: year,
+  };
 };
 
 // Get current time
@@ -49,7 +72,6 @@ export const convertTemp = (temp) => {
 
 // Convert wind speed from km to miles
 export const convertKM = (kilometers) => {
-  console.log(kilometers);
   return `${Math.round(kilometers * 0.621371).toFixed(2)}`;
 };
 

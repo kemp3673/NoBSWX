@@ -56,15 +56,26 @@ export default function Home() {
   }, [observationStations]);
 
   useEffect(() => {
+    let intervalId;
     if (weatherStation) {
-      getCurrentConditions(weatherStation)
-        .then((data) => {
-          setCurrentObserved(data);
-        })
-        .catch((error) => {
-          console.log("Error: ", error);
-        });
+      const getCurrentWeather = () => {
+        getCurrentConditions(weatherStation)
+          .then((data) => {
+            setCurrentObserved(data);
+          })
+          .catch((error) => {
+            console.log("Error: ", error);
+          });
+      };
+      // Call the function once immediately
+      getCurrentWeather();
+      // Call the function every 5 minutes
+      intervalId = setInterval(() => {
+        getCurrentWeather();
+      }, 300_000);
     }
+    // Clean up interval if dependency changes or is unmounted
+    return () => clearInterval(intervalId);
   }, [weatherStation]);
 
   if (currentObserved) {

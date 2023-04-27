@@ -12,17 +12,19 @@ import thunderstorms from "../assets/weatherIcons/thunder.png";
 import snow from "../assets/weatherIcons/snow.png";
 import windy from "../assets/weatherIcons/wind.png";
 import tornado from "../assets/weatherIcons/tornado.png";
+import partial_cloud from "../assets/weatherIcons/partial_cloud.png";
+import partial_cloud_night from "../assets/weatherIcons/night_partial_cloud.png";
 
 // Objects to hold icon data
 const icons = {
-  bkn: cloudy,
-  nbkn: cloudy_night,
+  bkn: partial_cloud,
+  nbkn: partial_cloud_night,
   skc: fair,
   nskc: fair_night,
-  few: cloudy,
-  nfew: cloudy_night,
-  sct: cloudy,
-  nsct: cloudy_night,
+  few: fair,
+  nfew: fair_night,
+  sct: partial_cloud,
+  nsct: partial_cloud_night,
   ovc: overcast,
   novc: overcast,
   fg: fog,
@@ -72,7 +74,7 @@ export const getIcon = (url, night) => {
     iconString = urlEnd.split("?")[0];
   }
   // URL for current conditions does not specify night with 'n' so we need to add it
-  if (night) {
+  if (night || url.includes("night")) {
     return icons["n" + iconString] || icons[iconString];
   } else {
     return icons[iconString];

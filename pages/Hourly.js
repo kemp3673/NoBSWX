@@ -77,6 +77,34 @@ export default function Hourly() {
                 alignItems: "center",
               }}
             >
+              {convertTime(item.startTime).time == "12:00 AM" ? (
+                <View
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    width: "95%",
+                    flexDirection: "row",
+                    backgroundColor: "rgba(0,0,0,1)",
+                    marginBottom: 2,
+                    borderRadius: 10,
+                    padding: 5,
+                    marginTop: 5,
+                    justifyContent: "center",
+                  }}
+                >
+                  <Text
+                    style={{ color: "white", fontWeight: "bold", fontSize: 18 }}
+                  >
+                    {/* TODO find way to make this more efficient instead of calling every time */}
+                    {convertTime(item.startTime).day}
+                    {", "}
+                    {convertTime(item.startTime).month}{" "}
+                    {convertTime(item.startTime).date}
+                    {", "}
+                    {convertTime(item.startTime).year}
+                  </Text>
+                </View>
+              ) : null}
               <View
                 style={{
                   display: "flex",
