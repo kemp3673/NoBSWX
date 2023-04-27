@@ -197,51 +197,65 @@ export default function Radar() {
   const { x, y } = getTileCoords(zoomLevel, center);
   return (
     <View style={RadarStyles.container}>
-      <MapView
-        style={RadarStyles.map}
-        region={{
-          latitude: location.latitude,
-          longitude: location.longitude,
-          latitudeDelta: 5,
-          longitudeDelta: 5,
-        }}
-        showScale={true}
-        showsCompass={true}
-        loadingEnabled={true}
-        showsScale={true}
-        mapType="mutedStandard"
-        userInterfaceStyle="dark"
-        onRegionChange={handleRegionChange}
-        customMapStyle={mapStyle}
-      >
-        {cloudsUrl && (
-          <UrlTile
-            urlTemplate={cloudsUrl}
-            zIndex={-1}
-            opacity={0.3}
-            maximumZ={19}
-            tileSize={256}
-            key={`clouds-${zoomLevel}-${x}-${y}`}
-            tileUrlTemplate={cloudsUrl
-              .replace("{x}", "{x}")
-              .replace("{y}", "{y}")
-              .replace("{z}", "{z}")}
-          />
-        )}
-        {precipitationUrl && (
-          <UrlTile
-            urlTemplate={precipitationUrl}
-            zIndex={-2}
-            maximumZ={19}
-            tileSize={256}
-            key={`precipitation-${zoomLevel}-${x}-${y}`}
-            tileUrlTemplate={precipitationUrl
-              .replace("{x}", "{x}")
-              .replace("{y}", "{y}")
-              .replace("{z}", "{z}")}
-          />
-        )}
-      </MapView>
+      <View style={{ position: "relative", flex: 1 }}>
+        <MapView
+          style={RadarStyles.map}
+          region={{
+            latitude: location.latitude,
+            longitude: location.longitude,
+            latitudeDelta: 5,
+            longitudeDelta: 5,
+          }}
+          showScale={true}
+          showsCompass={true}
+          loadingEnabled={true}
+          showsScale={true}
+          mapType="mutedStandard"
+          userInterfaceStyle="dark"
+          onRegionChange={handleRegionChange}
+          customMapStyle={mapStyle}
+        >
+          {cloudsUrl && (
+            <UrlTile
+              urlTemplate={cloudsUrl}
+              zIndex={-1}
+              opacity={0.3}
+              maximumZ={19}
+              tileSize={256}
+              key={`clouds-${zoomLevel}-${x}-${y}`}
+              tileUrlTemplate={cloudsUrl
+                .replace("{x}", "{x}")
+                .replace("{y}", "{y}")
+                .replace("{z}", "{z}")}
+            />
+          )}
+          {precipitationUrl && (
+            <UrlTile
+              urlTemplate={precipitationUrl}
+              zIndex={-2}
+              maximumZ={19}
+              tileSize={256}
+              key={`precipitation-${zoomLevel}-${x}-${y}`}
+              tileUrlTemplate={precipitationUrl
+                .replace("{x}", "{x}")
+                .replace("{y}", "{y}")
+                .replace("{z}", "{z}")}
+            />
+          )}
+        </MapView>
+
+        <Image
+          style={{
+            width: 75,
+            height: 30,
+            resizeMode: "contain",
+            position: "absolute",
+            bottom: Platform.OS == "ios" ? 20 : 2,
+            right: 1,
+          }}
+          source={require("../assets/openWeatherLogo.png")}
+        />
+      </View>
     </View>
   );
 }
