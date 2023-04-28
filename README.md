@@ -16,3 +16,7 @@ React Native Weather Application
 <h2>Radar with precipitation and cloud coverage</h2>
 <img src="https://user-images.githubusercontent.com/102747919/234762048-d297d6dd-0736-4d40-9cf4-5902226f615a.png"/>
 <p>Map overview of cloud and precipitation. Utilizes Apple Maps and Google Maps on respective devices.</p>
+
+<h2>Location Change with persistent saved locations to device</h2>
+<img src="https://user-images.githubusercontent.com/102747919/235264116-4acf63f8-23bd-4933-9350-4d990961e140.png"/>
+<p>Component that allows the user to manually change the location of the weather information utilizing location zipcode. Locations are saved to the device to allow persistent saved location list.</p>
