@@ -99,7 +99,6 @@ export const locationStyles = StyleSheet.create({
   },
   container: {
     flexDirection: "column",
-    // height: "100%",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -110,13 +109,14 @@ export const locationStyles = StyleSheet.create({
     width: "100%",
   },
   input: {
-    width: "80%",
+    width: "60%",
     borderColor: "white",
     borderWidth: 1,
     backgroundColor: "rgba(255,255,255,0.8)",
     borderRadius: 5,
     padding: 5,
     margin: 5,
+    textAlign: "center",
   },
   text: { color: "white", fontSize: 16 },
   savedContainer: {

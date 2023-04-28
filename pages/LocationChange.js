@@ -73,6 +73,7 @@ export default function LocationChange() {
     if (context.isLoading === false) {
       navigation.navigate("Home");
       setSelected(null);
+      setZipCode("");
     }
   }, [context.isLoading]);
 
@@ -144,7 +145,6 @@ export default function LocationChange() {
           <Button
             color="#74c3ed"
             title="Add Location"
-            width="80%"
             accessibilityLabel="Add location to saved places"
             onPress={() => {
               handleSubmit();
