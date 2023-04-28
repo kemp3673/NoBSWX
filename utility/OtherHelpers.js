@@ -1,3 +1,5 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 // Convert time from Unix to Day of Week and Time
 export const convertTime = (timeCode) => {
   const daysOfWeek = [
@@ -130,22 +132,23 @@ export const isNight = () => {
   }
 };
 
-export const setRelativeLocation = async (relativeLocation, callback) => {};
-
-// Update location used to get weather data
-export const updateLocation = async (location, callback) => {};
-
 // Get location from user input
-export const getLocation = async (userLocation, callback) => {
+export const getLocation = async (userLocation) => {
   // If not zipcode, then add '+' between words
-  await fetch(`https://geocode.maps.co/search?q=${userLocation}+US`)
-    .then((response) => response.json())
-    .then((data) => {
-      //Set location state data[0].lat, data[0].lon
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+  return new Promise(async (resolve, reject) => {
+    await fetch(`https://geocode.maps.co/search?q=${userLocation}+US`)
+      .then((response) => response.json())
+      .then((data) => {
+        resolve({
+          latitude: Number(data[0].lat).toFixed(4),
+          longitude: Number(data[0].lon).toFixed(4),
+          name: data[0].display_name,
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  });
 };
 
 export const convertDate = (date) => {
@@ -164,5 +167,56 @@ export const hiLo = (name) => {
     return "Low";
   } else {
     return "High";
+  }
+};
+
+// Save location to AsyncStorage
+export const saveLocations = async (location) => {
+  try {
+    const prev = await AsyncStorage.getItem("locations");
+    if (prev !== null) {
+      const prevLocations = JSON.parse(prev);
+      const existingLocation = prevLocations.find(
+        (loc) =>
+          loc.latitude === location.latitude &&
+          loc.longitude === location.longitude
+      );
+      if (!existingLocation) {
+        const newLocations = [...prevLocations, location];
+        await AsyncStorage.setItem("locations", JSON.stringify(newLocations));
+      }
+    } else {
+      await AsyncStorage.setItem("locations", JSON.stringify([location]));
+    }
+  } catch (error) {
+    console.error("Error saving locations:", error);
+  }
+};
+// Delete location from AsyncStorage
+export const deleteSavedLocation = async (location) => {
+  try {
+    const saved = await AsyncStorage.getItem("locations");
+    if (saved !== null) {
+      const savedLocations = JSON.parse(saved);
+      const newLocations = savedLocations.filter(
+        (loc) => loc.name !== location.name
+      );
+      await AsyncStorage.setItem("locations", JSON.stringify(newLocations));
+    }
+  } catch (error) {
+    console.error("Error deleting location:", error);
+  }
+};
+// Retrieve saved locations from AsyncStorage
+export const getSavedLocations = async () => {
+  try {
+    const saved = await AsyncStorage.getItem("locations");
+    if (saved !== null) {
+      return JSON.parse(saved);
+    } else {
+      return [];
+    }
+  } catch (error) {
+    console.error("Error getting locations:", error);
   }
 };

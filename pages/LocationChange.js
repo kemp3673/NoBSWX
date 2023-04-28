@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   View,
   Text,
@@ -10,15 +10,54 @@ import {
   ScrollView,
   Platform,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import { MaterialIcons } from "@expo/vector-icons";
+
+// Helpers
+import {
+  getLocation,
+  saveLocations,
+  deleteSavedLocation,
+  getSavedLocations,
+} from "../utility/OtherHelpers";
 
 // Styles
 import { locationStyles } from "../styles/styles";
+
+// Context
+import { WeatherContext } from "../App";
 
 export default function LocationChange() {
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [zipCode, setZipCode] = useState("");
+  const [savedLocations, setSavedLocations] = useState([]);
+
+  useEffect(() => {
+    getSavedLocations().then((data) => {
+      setSavedLocations(data);
+    });
+  }, []);
+
+  const navigation = useNavigation();
+  const context = useContext(WeatherContext);
+
+  const handleSubmit = () => {
+    getLocation(zipCode).then((data) => {
+      // Save location to AsyncStorage
+      saveLocations(data);
+      // Set location in context
+      context.setLocation({
+        latitude: data.latitude,
+        longitude: data.longitude,
+      });
+    });
+    // Needs a loading screen while waiting for data
+    // State value of isLoading that is set to true when handleSubmit is called, then set to false when data is returned. Once false, navigate to Home, if true, show loading indicator
+
+    // Navigate to Home screen
+    navigation.navigate("Home");
+  };
 
   return (
     <ImageBackground
@@ -28,52 +67,7 @@ export default function LocationChange() {
       style={locationStyles.background}
     >
       <View style={locationStyles.container}>
-        {/* <View
-          style={{
-            flexDirection: "column",
-            alignItems: "center",
-            width: "100%",
-          }}
-        >
-          <Text
-            style={{
-              color: "white",
-              padding: 10,
-              fontSize: 20,
-              fontWeight: "bold",
-            }}
-          >
-            Enter City and State
-          </Text>
-          <TextInput
-            style={styles.input}
-            type="text"
-            textContentType="addressCity"
-            placeholder="Enter City"
-            onChangeText={(text) => setCity(text)}
-            value={city}
-          />
-          <TextInput
-            style={styles.input}
-            type="text"
-            textContentType="addressState"
-            placeholder="Enter State ex. 'TN'"
-            onChangeText={(text) => setState(text)}
-            maxLength={2}
-            value={state}
-          />
-        </View> */}
         <View style={locationStyles.queryWrapper}>
-          {/* <Text
-            style={{
-              color: "white",
-              margin: 10,
-              fontSize: 24,
-              fontWeight: "bold",
-            }}
-          >
-            OR
-          </Text> */}
           <Text style={locationStyles.label}>Enter ZipCode</Text>
           <TextInput
             style={locationStyles.input}
@@ -92,71 +86,49 @@ export default function LocationChange() {
           title="Add Location"
           accessibilityLabel="Add location to saved places"
           onPress={() => {
-            console.log("Submit Pressed");
+            handleSubmit();
           }}
         />
         <View style={locationStyles.savedContainer}>
           <View style={locationStyles.divider} />
           <Text style={locationStyles.label}>Saved Locations</Text>
-          <ScrollView style={locationStyles.savedScroll}>
-            {/* Will be a FlatList once data is saved */}
-            <View style={locationStyles.savedWrapper}>
-              <View style={locationStyles.location}>
-                <Text
-                  style={locationStyles.text}
-                  onPress={() => {
-                    console.log("Nashville pressed");
-                  }}
-                >
-                  Nashville, TN
-                </Text>
-                <MaterialIcons
-                  name="delete"
-                  size={20}
-                  color="#74c3ed"
-                  onPress={() => {
-                    console.log("Nashville delete pressed");
-                  }}
-                />
-              </View>
-              <View style={locationStyles.location}>
-                <Text
-                  style={locationStyles.text}
-                  onPress={() => {
-                    console.log("Franklin pressed");
-                  }}
-                >
-                  Franklin, TN
-                </Text>
-                <MaterialIcons
-                  name="delete"
-                  size={20}
-                  color="#74c3ed"
-                  onPress={() => {
-                    console.log("Franklin delete pressed");
-                  }}
-                />
-              </View>
-              <View style={locationStyles.location}>
-                <Text
-                  style={locationStyles.text}
-                  onPress={() => {
-                    console.log("Brentwood pressed");
-                  }}
-                >
-                  Brentwood, TN
-                </Text>
-                <MaterialIcons
-                  name="delete"
-                  size={20}
-                  color="#74c3ed"
-                  onPress={() => {
-                    console.log("Brentwood delete pressed");
-                  }}
-                />
-              </View>
-            </View>
-          </ScrollView>
+          {/* <ScrollView style={locationStyles.savedScroll}> */}
+          {/* Will be a FlatList once data is saved */}
+          <View style={locationStyles.savedWrapper}>
+            {savedLocations.length === 0 ? (
+              <Text style={locationStyles.text}>No Saved Locations</Text>
+            ) : (
+              <FlatList
+                data={savedLocations}
+                renderItem={({ item }) => (
+                  <View style={locationStyles.location}>
+                    <Text
+                      style={locationStyles.text}
+                      onPress={() => {
+                        console.log(`${item.name} Pressed`);
+                      }}
+                    >
+                      {item.name.split(",")[0]}
+                      {", "}
+                      {item.name.split(",")[1].includes("County")
+                        ? item.name.split(",")[2]
+                        : item.name.split(",")[1]}
+                    </Text>
+                    <MaterialIcons
+                      name="delete"
+                      size={20}
+                      color="#74c3ed"
+                      onPress={() => {
+                        console.log(`${item.name} Delete pressed`);
+                      }}
+                    />
+                  </View>
+                )}
+                keyExtractor={(item) => item.name}
+              />
+            )}
+          </View>
+          {/* </ScrollView> */}
         </View>
       </View>
     </ImageBackground>

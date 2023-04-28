@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { StyleSheet, View, Text, Image, Platform } from "react-native";
 import MapView, { UrlTile, Marker } from "react-native-maps";
 
@@ -178,11 +178,16 @@ const getTileCoords = (zoom, center) => {
 };
 
 export default function Radar() {
-  const [zoomLevel, setZoomLevel] = useState(0);
-  const [center, setCenter] = useState({ latitude: 0, longitude: 0 });
-
+  const mapRef = useRef(null);
   const context = useContext(WeatherContext);
-  location = context.location || { latitude: 40.7128, longitude: -74.006 };
+  location = context.location;
+
+  const [zoomLevel, setZoomLevel] = useState(0);
+  const [center, setCenter] = useState({
+    latitude: location.latitude,
+    longitude: location.longitude,
+  });
+
   const precipitationUrl = `https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=${k}`;
   const cloudsUrl = `https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=${k}`;
 
@@ -197,65 +202,85 @@ export default function Radar() {
   const { x, y } = getTileCoords(zoomLevel, center);
   return (
     <View style={RadarStyles.container}>
-      <View style={{ position: "relative", flex: 1 }}>
-        <MapView
-          style={RadarStyles.map}
-          region={{
-            latitude: location.latitude,
-            longitude: location.longitude,
-            latitudeDelta: 5,
-            longitudeDelta: 5,
-          }}
-          showScale={true}
-          showsCompass={true}
-          loadingEnabled={true}
-          showsScale={true}
-          mapType="mutedStandard"
-          userInterfaceStyle="dark"
-          onRegionChange={handleRegionChange}
-          customMapStyle={mapStyle}
-        >
-          {cloudsUrl && (
-            <UrlTile
-              urlTemplate={cloudsUrl}
-              zIndex={-1}
-              opacity={0.3}
-              maximumZ={19}
-              tileSize={256}
-              key={`clouds-${zoomLevel}-${x}-${y}`}
-              tileUrlTemplate={cloudsUrl
-                .replace("{x}", "{x}")
-                .replace("{y}", "{y}")
-                .replace("{z}", "{z}")}
-            />
-          )}
-          {precipitationUrl && (
-            <UrlTile
-              urlTemplate={precipitationUrl}
-              zIndex={-2}
-              maximumZ={19}
-              tileSize={256}
-              key={`precipitation-${zoomLevel}-${x}-${y}`}
-              tileUrlTemplate={precipitationUrl
-                .replace("{x}", "{x}")
-                .replace("{y}", "{y}")
-                .replace("{z}", "{z}")}
-            />
-          )}
-        </MapView>
+      {center.latitude !== 0 && center.longitude !== 0 && (
+        <View style={{ position: "relative", flex: 1 }}>
+          <MapView
+            style={RadarStyles.map}
+            region={{
+              latitude: location.latitude,
+              longitude: location.longitude,
+              latitudeDelta: 5,
+              longitudeDelta: 5,
+            }}
+            showScale={true}
+            showsCompass={true}
+            loadingEnabled={true}
+            showsScale={true}
+            mapType="mutedStandard"
+            userInterfaceStyle="dark"
+            onRegionChange={handleRegionChange}
+            customMapStyle={mapStyle}
+            ref={mapRef}
+          >
+            {cloudsUrl && (
+              <UrlTile
+                urlTemplate={cloudsUrl}
+                zIndex={-1}
+                opacity={0.3}
+                maximumZ={19}
+                tileSize={256}
+                key={`clouds-${zoomLevel}-${x}-${y}`}
+                tileUrlTemplate={cloudsUrl
+                  .replace("{x}", "{x}")
+                  .replace("{y}", "{y}")
+                  .replace("{z}", "{z}")}
+              />
+            )}
+            {precipitationUrl && (
+              <UrlTile
+                urlTemplate={precipitationUrl}
+                zIndex={-2}
+                maximumZ={19}
+                tileSize={256}
+                key={`precipitation-${zoomLevel}-${x}-${y}`}
+                tileUrlTemplate={precipitationUrl
+                  .replace("{x}", "{x}")
+                  .replace("{y}", "{y}")
+                  .replace("{z}", "{z}")}
+              />
+            )}
+            <Marker
+              coordinate={{
+                latitude: location.latitude,
+                longitude: location.longitude,
+              }}
+              title={"Current Location"}
+              description={"Location may not be accurate due to IP address"}
+            >
+              <View
+                style={{
+                  width: 10,
+                  height: 10,
+                  borderRadius: 10,
+                  backgroundColor: "red",
+                }}
+              />
+            </Marker>
+          </MapView>
 
-        <Image
-          style={{
-            width: 75,
-            height: 30,
-            resizeMode: "contain",
-            position: "absolute",
-            bottom: Platform.OS == "ios" ? 20 : 2,
-            right: 1,
-          }}
-          source={require("../assets/openWeatherLogo.png")}
-        />
-      </View>
+          <Image
+            style={{
+              width: 75,
+              height: 30,
+              resizeMode: "contain",
+              position: "absolute",
+              bottom: Platform.OS == "ios" ? 20 : 2,
+              right: 1,
+            }}
+            source={require("../assets/openWeatherLogo.png")}
+          />
+        </View>
+      )}
     </View>
   );
 }

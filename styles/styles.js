@@ -115,15 +115,18 @@ export const locationStyles = StyleSheet.create({
   text: { color: "white", fontSize: 16 },
   savedContainer: {
     flexDirection: "column",
-    justifyContent: "space-between",
+    // justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
   },
   savedWrapper: {
     flexDirection: "column",
-    justifyContent: "space-between",
+    justifyContent: "center",
     alignItems: "center",
-    width: "100%",
+    width: "90%",
+
+    borderColor: "red",
+    borderWidth: 1,
   },
   label: {
     color: "white",
@@ -138,8 +141,11 @@ export const locationStyles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    width: "60%",
     padding: 5,
+    width: "80%",
+
+    borderColor: "green",
+    borderWidth: 1,
   },
   divider: {
     height: 2,

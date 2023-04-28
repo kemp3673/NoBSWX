@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { Text, View, Button, StyleSheet } from "react-native";
@@ -20,7 +20,7 @@ import {
 import Home from "../pages/Home";
 import DailyForecasts from "../pages/DailyForecasts";
 import Hourly from "../pages/Hourly";
-import Radar from "../pages/Radar";
+const Radar = React.lazy(() => import("../pages/Radar"));
 import LocationChange from "../pages/LocationChange";
 
 const Tab = createMaterialTopTabNavigator();
@@ -127,7 +127,11 @@ function MyTabs() {
           },
         }}
       >
-        {() => <Radar />}
+        {() => (
+          <React.Suspense fallback={<View />}>
+            <Radar />
+          </React.Suspense>
+        )}
       </Tab.Screen>
     </Tab.Navigator>
   );

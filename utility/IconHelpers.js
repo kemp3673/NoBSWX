@@ -28,6 +28,7 @@ const icons = {
   ovc: overcast,
   novc: overcast,
   fg: fog,
+  fog: fog,
   nfg: fog,
   smoke: fog,
   fzra: sleet,

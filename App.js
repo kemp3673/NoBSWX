@@ -2,6 +2,7 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import { NavigationContainer } from "@react-navigation/native";
 import { SafeAreaView, View, Text, StatusBar, Image } from "react-native";
 import React, { useState, useEffect, createContext } from "react";
+import * as Location from "expo-location";
 
 // Styles
 import { AppStyles } from "./styles/styles";
@@ -23,8 +24,8 @@ export default function App() {
   const [localForecastUrl, setLocalForecastUrl] = useState(null);
   const [hourlyForecastUrl, setHourlyForecastUrl] = useState(null);
   const [location, setLocation] = useState({
-    latitude: 36.5313,
-    longitude: -87.3537,
+    latitude: 40.7128,
+    longitude: -74.0061,
   });
   const [zone, setZone] = useState(null);
   const [relativeLocation, setRelativeLocation] = useState({
@@ -32,6 +33,22 @@ export default function App() {
     city: null,
   });
   const [observationStations, setObservationStations] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.error("Permission to access location was denied");
+        return;
+      }
+
+      let userLocation = await Location.getCurrentPositionAsync({});
+      setLocation({
+        latitude: Number(userLocation.coords.latitude.toFixed(4)),
+        longitude: Number(userLocation.coords.longitude.toFixed(4)),
+      });
+    })();
+  }, []);
 
   useEffect(() => {
     setTimeout(() => setTempSplash(false), 5000);
