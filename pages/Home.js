@@ -39,44 +39,9 @@ export default function Home() {
   const context = useContext(WeatherContext);
   const relativeLocation = context.relativeLocation;
   const observationStations = context.observationStations;
-
-  const [weatherStation, setWeatherStation] = useState(null);
-  const [currentObserved, setCurrentObserved] = useState(null);
-
-  useEffect(() => {
-    if (observationStations) {
-      getWeatherStation(observationStations)
-        .then((data) => {
-          setWeatherStation(data);
-        })
-        .catch((error) => {
-          console.log("Error: ", error);
-        });
-    }
-  }, [observationStations]);
-
-  useEffect(() => {
-    let intervalId;
-    if (weatherStation) {
-      const getCurrentWeather = () => {
-        getCurrentConditions(weatherStation)
-          .then((data) => {
-            setCurrentObserved(data);
-          })
-          .catch((error) => {
-            console.log("Error: ", error);
-          });
-      };
-      // Call the function once immediately
-      getCurrentWeather();
-      // Call the function every 5 minutes
-      intervalId = setInterval(() => {
-        getCurrentWeather();
-      }, 300_000);
-    }
-    // Clean up interval if dependency changes or is unmounted
-    return () => clearInterval(intervalId);
-  }, [weatherStation]);
+  const currentObserved = context.currentObserved;
+  const setCurrentObserved = context.setCurrentObserved;
+  const weatherStation = context.weatherStation;
 
   if (currentObserved) {
     return (
@@ -137,7 +102,7 @@ export default function Home() {
               Humidity
             </Text>
             <Text style={homeStyles.boldText} allowFontScaling={false}>
-              {currentObserved.relativeHumidity.value.toFixed(2)}%
+              {currentObserved.relativeHumidity.value.toFixed(2) || 0}%
             </Text>
           </View>
         </View>

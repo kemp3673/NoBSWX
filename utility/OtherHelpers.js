@@ -134,21 +134,29 @@ export const isNight = () => {
 
 // Get location from user input
 export const getLocation = async (userLocation) => {
-  // If not zipcode, then add '+' between words
-  return new Promise(async (resolve, reject) => {
-    await fetch(`https://geocode.maps.co/search?q=${userLocation}+US`)
-      .then((response) => response.json())
-      .then((data) => {
-        resolve({
-          latitude: Number(data[0].lat).toFixed(4),
-          longitude: Number(data[0].lon).toFixed(4),
-          name: data[0].display_name,
-        });
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  });
+  try {
+    // For future implmeneation, geocode API can take in city, state in format of ${city}+${state} in place of ${userLocation}
+    const geocodeResponse = await fetch(
+      `https://geocode.maps.co/search?q=${userLocation}+US`
+    );
+    const geocodeData = await geocodeResponse.json();
+    // Using the api.weather.gov API to get the city and state of the location as I find it to be more accurate than the geocode API
+    const weatherResponse = await fetch(
+      `https://api.weather.gov/points/${geocodeData[0].lat},${geocodeData[0].lon}`
+    );
+    const weatherData = await weatherResponse.json();
+    const city = weatherData.properties.relativeLocation.properties.city;
+    const state = weatherData.properties.relativeLocation.properties.state;
+    const location = {
+      latitude: Number(geocodeData[0].lat).toFixed(4),
+      longitude: Number(geocodeData[0].lon).toFixed(4),
+      name: `${city}, ${state}`,
+    };
+    return location;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
 };
 
 export const convertDate = (date) => {

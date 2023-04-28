@@ -5955,6 +5955,11 @@
   "resolved" "https://registry.npmjs.org/react-native-gradle-plugin/-/react-native-gradle-plugin-0.71.17.tgz"
   "version" "0.71.17"
 
+"react-native-loading-spinner-overlay@^3.0.1":
+  "integrity" "sha512-4GdR54HQnKg2HPSSisVizfTLuyhSh4splY9eb8mKiYF1Ihjn/5EmdNo5bN3S7uKPFRC3WLzIZIouX6G6fXfnjw=="
+  "resolved" "https://registry.npmjs.org/react-native-loading-spinner-overlay/-/react-native-loading-spinner-overlay-3.0.1.tgz"
+  "version" "3.0.1"
+
 "react-native-maps@^1.6.0":
   "integrity" "sha512-kaKX1cRzCmyhtN6InXiZMEmGAmah15eLP+f/8S4o2fh9KVl8T4XeRB0Gdcwxdvwuf1Yel7g8I3NbIwSr06DP2Q=="
   "resolved" "https://registry.npmjs.org/react-native-maps/-/react-native-maps-1.6.0.tgz"

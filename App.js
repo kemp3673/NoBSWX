@@ -8,7 +8,11 @@ import * as Location from "expo-location";
 import { AppStyles } from "./styles/styles";
 
 // Helpers
-import { getWXData, getWeatherStation } from "./utility/WeatherHelpers";
+import {
+  getWXData,
+  getWeatherStation,
+  getCurrentConditions,
+} from "./utility/WeatherHelpers";
 import { nightCheck } from "./utility/OtherHelpers";
 
 import MyTabs from "./Navigators/TopBar";
@@ -19,7 +23,7 @@ export const WeatherContext = createContext(null);
 
 export default function App() {
   const [tempSplash, setTempSplash] = useState(true);
-
+  const [timerComplete, setTimerComplete] = useState(false);
   const [isNight, setIsNight] = useState(false);
   const [localForecastUrl, setLocalForecastUrl] = useState(null);
   const [hourlyForecastUrl, setHourlyForecastUrl] = useState(null);
@@ -33,7 +37,11 @@ export default function App() {
     city: null,
   });
   const [observationStations, setObservationStations] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [weatherStation, setWeatherStation] = useState(null);
+  const [currentObserved, setCurrentObserved] = useState(null);
 
+  // Get user location when app loads
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -48,10 +56,21 @@ export default function App() {
         longitude: Number(userLocation.coords.longitude.toFixed(4)),
       });
     })();
+    // Create a timer to signal its ok to remove splash screen after 5 seconds
+    setTimeout(() => {
+      setTimerComplete(false);
+    }, 5000);
+    // Clear splash screen after 60 seconds (in case data fails to load)
+    setTimeout(() => {
+      setTempSplash(false);
+    }, 60000);
   }, []);
-
+  // Get general weather data when location changes (URLs for forecast, hourly forecast, and observation stations)
   useEffect(() => {
-    setTimeout(() => setTempSplash(false), 5000);
+    // Time out after 30 seconds if data fails to load
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 30000);
     setIsNight(new Date().getHours() > 18 || new Date().getHours() < 6);
     getWXData(location)
       .then((data) => {
@@ -65,6 +84,53 @@ export default function App() {
         console.log("Error: ", error);
       });
   }, [location]);
+  // Once observation stations are loaded, get the closest station and set it as the weather station
+  useEffect(() => {
+    if (observationStations) {
+      getWeatherStation(observationStations)
+        .then((data) => {
+          setWeatherStation(data);
+        })
+        .catch((error) => {
+          console.log("Error: ", error);
+        });
+    }
+  }, [observationStations]);
+  // Once weather station is loaded, get the current conditions and set them as currentObserved
+  // Have to do them here instead of in the home component to prevent the home component from showing up before the data is loaded
+  useEffect(() => {
+    let intervalId;
+    if (weatherStation) {
+      const getCurrentWeather = () => {
+        getCurrentConditions(weatherStation)
+          .then((data) => {
+            setCurrentObserved(data);
+            setIsLoading(false); //`Remove loading spinner when changing location
+            // Remove splash screen after at least 5 seconds
+            if (timerComplete) {
+              // If data took longer to load than 5 seconds, remove splash screen immediately
+              setTempSplash(false);
+            } else {
+              // otherwise, remove splash screen after additional 5 seconds to ensure that splash screen doesn't just show a flash
+              setTimeout(() => {
+                setTempSplash(false);
+              }, 5000);
+            }
+          })
+          .catch((error) => {
+            console.log("Error: ", error);
+          });
+      };
+      // Call the function once immediately
+      getCurrentWeather();
+      // Call the function every 5 minutes
+      intervalId = setInterval(() => {
+        getCurrentWeather();
+      }, 300_000);
+    }
+    // Clean up interval if dependency changes or is unmounted
+    return () => clearInterval(intervalId);
+  }, [weatherStation]);
 
   // Add splash screen until data is loaded
   return tempSplash ? (
@@ -85,6 +151,12 @@ export default function App() {
         relativeLocation,
         observationStations,
         isNight,
+        isLoading,
+        setIsLoading,
+        currentObserved,
+        setCurrentObserved,
+        weatherStation,
+        setWeatherStation,
       }}
     >
       <SafeAreaView style={{ flex: 1 }}>

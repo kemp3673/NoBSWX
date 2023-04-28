@@ -9,8 +9,10 @@ import {
   ImageBackground,
   ScrollView,
   Platform,
+  KeyboardAvoidingView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import Spinner from "react-native-loading-spinner-overlay";
 import { MaterialIcons } from "@expo/vector-icons";
 
 // Helpers
@@ -32,6 +34,8 @@ export default function LocationChange() {
   const [state, setState] = useState("");
   const [zipCode, setZipCode] = useState("");
   const [savedLocations, setSavedLocations] = useState([]);
+  const [selected, setSelected] = useState(null);
+  const [trashSelected, setTrashSelected] = useState(null);
 
   useEffect(() => {
     getSavedLocations().then((data) => {
@@ -43,20 +47,59 @@ export default function LocationChange() {
   const context = useContext(WeatherContext);
 
   const handleSubmit = () => {
-    getLocation(zipCode).then((data) => {
-      // Save location to AsyncStorage
-      saveLocations(data);
-      // Set location in context
-      context.setLocation({
-        latitude: data.latitude,
-        longitude: data.longitude,
+    context.setIsLoading(true);
+    getLocation(zipCode)
+      .then((data) => {
+        // Save location to AsyncStorage
+        saveLocations(data).then((data) => {
+          getSavedLocations(data).then((data) => {
+            setSavedLocations(data);
+          });
+        });
+        // Set location in context
+        context.setLocation({
+          latitude: Number(data.latitude),
+          longitude: Number(data.longitude),
+        });
+      })
+      .catch((error) => {
+        context.setIsLoading(false);
+        console.error(error);
+        alert("There was a problem getting the weather. Please try again.");
       });
-    });
-    // Needs a loading screen while waiting for data
-    // State value of isLoading that is set to true when handleSubmit is called, then set to false when data is returned. Once false, navigate to Home, if true, show loading indicator
+  };
 
-    // Navigate to Home screen
-    navigation.navigate("Home");
+  useEffect(() => {
+    if (context.isLoading === false) {
+      navigation.navigate("Home");
+      setSelected(null);
+    }
+  }, [context.isLoading]);
+
+  const handleDelete = (item) => {
+    setTrashSelected(item);
+    deleteSavedLocation(item)
+      .then((data) => {
+        getSavedLocations(data).then((amended) => {
+          setSavedLocations(amended);
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+        alert("There was a problem deleting the location. Please try again.");
+      })
+      .finally(() => {
+        setTrashSelected(null);
+      });
+  };
+
+  const handleSelect = (item) => {
+    setSelected(item);
+    context.setIsLoading(true);
+    context.setLocation({
+      latitude: Number(item.latitude),
+      longitude: Number(item.longitude),
+    });
   };
 
   return (
@@ -66,7 +109,23 @@ export default function LocationChange() {
       }}
       style={locationStyles.background}
     >
-      <View style={locationStyles.container}>
+      {/* <KeyboardAvoidingView style={locationStyles.container} behavior="padding"> */}
+      <KeyboardAvoidingView
+        style={{
+          flex: 1,
+          position: "absolute",
+          top: "15%",
+          bottom: 0,
+          left: 0,
+          right: 0,
+        }}
+        behavior="padding"
+      >
+        {/* <View style={locationStyles.container} behavior="padding"> */}
+        <Spinner
+          visible={context.isLoading}
+          textStyle={locationStyles.spinnerTextStyle}
+        />
         <View style={locationStyles.queryWrapper}>
           <Text style={locationStyles.label}>Enter ZipCode</Text>
           <TextInput
@@ -81,56 +140,63 @@ export default function LocationChange() {
             value={zipCode}
           />
         </View>
-        <Button
-          color="#74c3ed"
-          title="Add Location"
-          accessibilityLabel="Add location to saved places"
-          onPress={() => {
-            handleSubmit();
-          }}
-        />
+        <View style={locationStyles.container}>
+          <Button
+            color="#74c3ed"
+            title="Add Location"
+            width="80%"
+            accessibilityLabel="Add location to saved places"
+            onPress={() => {
+              handleSubmit();
+            }}
+          />
+        </View>
         <View style={locationStyles.savedContainer}>
           <View style={locationStyles.divider} />
           <Text style={locationStyles.label}>Saved Locations</Text>
-          {/* <ScrollView style={locationStyles.savedScroll}> */}
-          {/* Will be a FlatList once data is saved */}
-          <View style={locationStyles.savedWrapper}>
-            {savedLocations.length === 0 ? (
-              <Text style={locationStyles.text}>No Saved Locations</Text>
-            ) : (
-              <FlatList
-                data={savedLocations}
-                renderItem={({ item }) => (
-                  <View style={locationStyles.location}>
-                    <Text
-                      style={locationStyles.text}
-                      onPress={() => {
-                        console.log(`${item.name} Pressed`);
-                      }}
-                    >
-                      {item.name.split(",")[0]}
-                      {", "}
-                      {item.name.split(",")[1].includes("County")
-                        ? item.name.split(",")[2]
-                        : item.name.split(",")[1]}
-                    </Text>
-                    <MaterialIcons
-                      name="delete"
-                      size={20}
-                      color="#74c3ed"
-                      onPress={() => {
-                        console.log(`${item.name} Delete pressed`);
-                      }}
-                    />
-                  </View>
-                )}
-                keyExtractor={(item) => item.name}
-              />
-            )}
-          </View>
-          {/* </ScrollView> */}
+          {savedLocations.length === 0 ? (
+            <Text style={locationStyles.text}>No Saved Locations</Text>
+          ) : (
+            <FlatList
+              style={{ alignSelf: "center" }}
+              contentContainerStyle={{
+                flexGrow: 1,
+              }}
+              width="80%"
+              data={savedLocations}
+              keyExtractor={(item) => item.name}
+              renderItem={({ item }) => (
+                <View style={locationStyles.location}>
+                  <Text
+                    style={{
+                      color: selected === item ? "#74c3ed" : "white",
+                    }}
+                    // style={locationStyles.text}
+                    onPress={() => {
+                      handleSelect(item);
+                    }}
+                  >
+                    {item.name.split(",")[0]}
+                    {", "}
+                    {item.name.split(",")[1].includes("County")
+                      ? item.name.split(",")[2]
+                      : item.name.split(",")[1]}
+                  </Text>
+                  <MaterialIcons
+                    name="delete"
+                    size={20}
+                    color={trashSelected == item ? "red" : "#74c3ed"}
+                    onPress={() => {
+                      handleDelete(item);
+                    }}
+                  />
+                </View>
+              )}
+            />
+          )}
         </View>
-      </View>
+        {/* </View> */}
+      </KeyboardAvoidingView>
     </ImageBackground>
   );
 }

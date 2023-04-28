@@ -40,7 +40,7 @@ export const homeStyles = StyleSheet.create({
   innerWrapper: {
     backgroundColor: "rgba(0,0,0,0.6)",
     padding: 50,
-    borderRadius: 10,
+    // borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
     width: "100%",
@@ -85,6 +85,12 @@ export const hourlyStyles = StyleSheet.create({});
 
 // Styles for LocationChange.js
 export const locationStyles = StyleSheet.create({
+  spinnerTextStyle: {
+    color: "#FFF",
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+  },
   background: {
     alignContent: "center",
     textAlign: "center",
@@ -93,7 +99,7 @@ export const locationStyles = StyleSheet.create({
   },
   container: {
     flexDirection: "column",
-    height: "100%",
+    // height: "100%",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -125,7 +131,7 @@ export const locationStyles = StyleSheet.create({
     alignItems: "center",
     width: "90%",
 
-    borderColor: "red",
+    borderColor: "green",
     borderWidth: 1,
   },
   label: {
@@ -140,12 +146,7 @@ export const locationStyles = StyleSheet.create({
   location: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
-    padding: 5,
-    width: "80%",
-
-    borderColor: "green",
-    borderWidth: 1,
+    padding: 10,
   },
   divider: {
     height: 2,

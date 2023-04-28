@@ -65,6 +65,7 @@ const icons = {
 /* isDayTime is in forecast data  (at least for weekly)*/
 export const getIcon = (url, night) => {
   // Split the url to grab the last part of the url
+  if (!url) return overcast;
   let urlSplit = url.split("/");
   let urlEnd = urlSplit[urlSplit.length - 1];
   let iconString = "";

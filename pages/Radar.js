@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { StyleSheet, View, Text, Image, Platform } from "react-native";
 import MapView, { UrlTile, Marker } from "react-native-maps";
-
+// Icons
+import { Entypo } from "@expo/vector-icons";
 // Styles
 import { RadarStyles } from "../styles/styles";
-
 // Context
 import { WeatherContext } from "../App";
 
@@ -255,16 +255,9 @@ export default function Radar() {
                 longitude: location.longitude,
               }}
               title={"Current Location"}
-              description={"Location may not be accurate due to IP address"}
+              description={"Location accuracy dependant on device settings"}
             >
-              <View
-                style={{
-                  width: 10,
-                  height: 10,
-                  borderRadius: 10,
-                  backgroundColor: "red",
-                }}
-              />
+              <Entypo name="location-pin" size={24} color="#40e9f5" />
             </Marker>
           </MapView>
 
