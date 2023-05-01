@@ -1,5 +1,3 @@
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { NavigationContainer } from "@react-navigation/native";
 import { SafeAreaView, View, Text, StatusBar, Image } from "react-native";
 import React, { useState, useEffect, createContext } from "react";
 import * as Location from "expo-location";
@@ -17,8 +15,7 @@ import { nightCheck } from "./utility/OtherHelpers";
 
 import MyTabs from "./Navigators/TopBar";
 
-const Tab = createMaterialTopTabNavigator();
-
+// Place context stuff in another file and import it to prevent require cycles
 export const WeatherContext = createContext(null);
 
 export default function App() {
@@ -67,7 +64,7 @@ export default function App() {
   }, []);
   // Get general weather data when location changes (URLs for forecast, hourly forecast, and observation stations)
   useEffect(() => {
-    // Time out after 30 seconds if data fails to load
+    // Time out after 30 seconds
     setTimeout(() => {
       setIsLoading(false);
     }, 30000);
@@ -141,6 +138,7 @@ export default function App() {
       />
     </View>
   ) : (
+    // Move all initial data loading to Home component to prevent circular dependencies. Will wait to render Home component until data is loaded and splash screen is removed. This will prevent the Home component from showing up before the data is loaded. Determine what needs to be stored globally and what can be stored locally or passed as props. For example, the current conditions can be stored globally, but the forecast can be passed as props to the Forecast component.
     <WeatherContext.Provider
       value={{
         localForecastUrl,

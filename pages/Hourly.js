@@ -9,6 +9,9 @@ import {
 } from "react-native";
 import { Fontisto } from "@expo/vector-icons";
 
+// Ads
+// import { AdMobBanner, setTestDeviceIDAsync } from "expo-ads-admob";
+
 // Context
 import { WeatherContext } from "../App";
 
@@ -19,7 +22,7 @@ import { getIcon } from "../utility/IconHelpers";
 
 export default function Hourly() {
   const context = useContext(WeatherContext);
-
+  const adUnitID = "ca-app-pub-7186648467471890~8437973545";
   const [hourlyForecast, setHourlyForecast] = useState(null);
 
   useEffect(() => {
@@ -68,161 +71,186 @@ export default function Hourly() {
           data={hourlyForecast}
           showsVerticalScrollIndicator={false}
           renderItem={({ item, index }) => (
-            <View
-              style={{
-                display: "flex",
-                width: "100%",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              {convertTime(item.startTime).time == "12:00 AM" ? (
+            <View>
+              {(index + 1) % 10 == 0 ? (
+                // <AdMobBanner
+                //   bannerSize="smartBanner"
+                //   adUnitID={adUnitID}
+                //   onDidFailToReceiveAdWithError={(e) => console.log(e)}
+                // />
+                <View style={{ alignItems: "center" }}>
+                  <Image
+                    style={{ height: 50, resizeMode: "contain", marginTop: 5 }}
+                    source={require("../assets/fakeAd.png")}
+                  />
+                </View>
+              ) : null}
+              <View
+                style={{
+                  display: "flex",
+                  width: "100%",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                {convertTime(item.startTime).time == "12:00 AM" ? (
+                  <View
+                    style={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      width: "95%",
+                      flexDirection: "row",
+                      backgroundColor: "rgba(0,0,0,1)",
+                      marginBottom: 2,
+                      borderRadius: 10,
+                      padding: 5,
+                      marginTop: 5,
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: "white",
+                        fontWeight: "bold",
+                        fontSize: 18,
+                      }}
+                    >
+                      {/* TODO find way to make this more efficient instead of calling every time */}
+                      {convertTime(item.startTime).day}
+                      {", "}
+                      {convertTime(item.startTime).month}{" "}
+                      {convertTime(item.startTime).date}
+                      {", "}
+                      {convertTime(item.startTime).year}
+                    </Text>
+                  </View>
+                ) : null}
                 <View
                   style={{
                     display: "flex",
                     flexWrap: "wrap",
                     width: "95%",
                     flexDirection: "row",
-                    backgroundColor: "rgba(0,0,0,1)",
+                    backgroundColor: "rgba(0, 0, 0, 0.7)",
                     marginBottom: 2,
                     borderRadius: 10,
                     padding: 5,
                     marginTop: 5,
-                    justifyContent: "center",
-                  }}
-                >
-                  <Text
-                    style={{ color: "white", fontWeight: "bold", fontSize: 18 }}
-                  >
-                    {/* TODO find way to make this more efficient instead of calling every time */}
-                    {convertTime(item.startTime).day}
-                    {", "}
-                    {convertTime(item.startTime).month}{" "}
-                    {convertTime(item.startTime).date}
-                    {", "}
-                    {convertTime(item.startTime).year}
-                  </Text>
-                </View>
-              ) : null}
-              <View
-                style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  width: "95%",
-                  flexDirection: "row",
-                  backgroundColor: "rgba(0, 0, 0, 0.7)",
-                  marginBottom: 2,
-                  borderRadius: 10,
-                  padding: 5,
-                  marginTop: 5,
-                  justifyContent: "space-between",
-                }}
-              >
-                <View
-                  style={{ flex: 1, justifyContent: "center", paddingLeft: 5 }}
-                >
-                  <Image
-                    style={{
-                      height: 50,
-                      width: 50,
-                    }}
-                    source={getIcon(item.icon)}
-                    alt="image"
-                  />
-                </View>
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: "center",
-                  }}
-                >
-                  <Text style={{ color: "white", fontSize: 12 }}>
-                    {convertTime(item.startTime).day}
-                  </Text>
-                  <Text style={{ color: "white", fontSize: 12 }}>
-                    {convertTime(item.startTime).time}
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: "center",
-                  }}
-                >
-                  <Text
-                    style={{
-                      alignItems: "center",
-                      justifyContent: "center",
-                      textAlign: "center",
-                      color: "white",
-                      fontSize: 12,
-                    }}
-                  >
-                    {item.shortForecast}
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: "center",
-                    alignContent: "center",
-                    display: "flex",
-                    flexDirection: "column",
+                    justifyContent: "space-between",
                   }}
                 >
                   <View
                     style={{
                       flex: 1,
                       justifyContent: "center",
-                      alignContent: "center",
-                      display: "flex",
-                      flexDirection: "row",
+                      paddingLeft: 5,
                     }}
                   >
-                    <Text style={{ color: "white", fontSize: 12, padding: 5 }}>
-                      <Fontisto name="blood-drop" size={12} color="white" />
-                      {"  "}
-                      {item.probabilityOfPrecipitation.value}%
+                    <Image
+                      style={{
+                        height: 50,
+                        width: 50,
+                      }}
+                      source={getIcon(item.icon)}
+                      alt="image"
+                    />
+                  </View>
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Text style={{ color: "white", fontSize: 12 }}>
+                      {convertTime(item.startTime).day}
+                    </Text>
+                    <Text style={{ color: "white", fontSize: 12 }}>
+                      {convertTime(item.startTime).time}
                     </Text>
                   </View>
                   <View
                     style={{
+                      flex: 1,
                       justifyContent: "center",
-                      alignContent: "center",
                     }}
                   >
                     <Text
                       style={{
+                        alignItems: "center",
+                        justifyContent: "center",
+                        textAlign: "center",
                         color: "white",
                         fontSize: 12,
-                        padding: 5,
+                      }}
+                    >
+                      {item.shortForecast}
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: "center",
+                      alignContent: "center",
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
+                  >
+                    <View
+                      style={{
+                        flex: 1,
+                        justifyContent: "center",
+                        alignContent: "center",
+                        display: "flex",
+                        flexDirection: "row",
+                      }}
+                    >
+                      <Text
+                        style={{ color: "white", fontSize: 12, padding: 5 }}
+                      >
+                        <Fontisto name="blood-drop" size={12} color="white" />
+                        {"  "}
+                        {item.probabilityOfPrecipitation.value}%
+                      </Text>
+                    </View>
+                    <View
+                      style={{
+                        justifyContent: "center",
+                        alignContent: "center",
+                      }}
+                    >
+                      <Text
+                        style={{
+                          color: "white",
+                          fontSize: 12,
+                          padding: 5,
+                          textAlign: "center",
+                        }}
+                      >
+                        <Fontisto name="wind" size={10} color="white" />{" "}
+                        {item.windDirection}
+                        {`\n`}
+                        {item.windSpeed}
+                      </Text>
+                    </View>
+                  </View>
+
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: "#74c3ed",
+                        fontSize: 18,
                         textAlign: "center",
                       }}
                     >
-                      <Fontisto name="wind" size={10} color="white" />{" "}
-                      {item.windDirection}
-                      {`\n`}
-                      {item.windSpeed}
+                      {item.temperature}°
                     </Text>
                   </View>
-                </View>
-
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: "center",
-                  }}
-                >
-                  <Text
-                    style={{
-                      color: "#74c3ed",
-                      fontSize: 18,
-                      textAlign: "center",
-                    }}
-                  >
-                    {item.temperature}°
-                  </Text>
                 </View>
               </View>
             </View>

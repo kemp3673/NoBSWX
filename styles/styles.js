@@ -69,6 +69,7 @@ export const homeStyles = StyleSheet.create({
     alignItems: "center",
     padding: 10,
     width: "100%",
+    maxWidth: 600,
   },
   currentIcon: {
     height: 100,

@@ -68,166 +68,181 @@ export default function DailyForecasts() {
           showsVerticalScrollIndicator={false}
           style={{ width: "100%" }}
           renderItem={({ item, index }) => (
-            <View
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
+            <View>
+              {(index + 1) % 6 == 0 ? (
+                // <AdMobBanner
+                //   bannerSize="smartBanner"
+                //   adUnitID={adUnitID}
+                //   onDidFailToReceiveAdWithError={(e) => console.log(e)}
+                // />
+                <View style={{ alignItems: "center" }}>
+                  <Image
+                    style={{ height: 50, resizeMode: "contain", marginTop: 5 }}
+                    source={require("../assets/fakeAd2.png")}
+                  />
+                </View>
+              ) : null}
               <View
                 style={{
                   display: "flex",
-                  flexDirection: "column",
-                  backgroundColor: "rgba(0, 0, 0, 0.7)",
-                  borderRadius: 10,
-                  marginBottom: 2,
-                  padding: 5,
-                  marginTop: 5,
-                  width: "95%",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
               >
                 <View
                   style={{
                     display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <View
-                    style={{
-                      justifyContent: "center",
-                      flex: 0.75,
-                    }}
-                  >
-                    <Image
-                      style={{
-                        height: 50,
-                        width: 50,
-                      }}
-                      source={getIcon(item.icon)}
-                      alt="image"
-                    />
-                  </View>
-                  <View
-                    style={{
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flex: 1,
-                    }}
-                  >
-                    <Text
-                      style={{
-                        color: "white",
-                        fontSize: 14,
-                        textAlign: "center",
-                      }}
-                    >
-                      {item.name}
-                    </Text>
-                    <Text
-                      style={{
-                        color: "white",
-                        fontSize: 14,
-                        textAlign: "center",
-                      }}
-                    >
-                      {convertDate(item.startTime)}
-                    </Text>
-                  </View>
-                  <View
-                    style={{
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flex: 1.25,
-                    }}
-                  >
-                    <Text
-                      style={{
-                        color: "white",
-                        fontSize: 14,
-                        textAlign: "center",
-                      }}
-                    >
-                      {item.shortForecast}
-                    </Text>
-                  </View>
-
-                  {hiLo(item.name) === "Low" ? (
-                    <View
-                      style={{
-                        justifyContent: "center",
-                        flex: 1,
-                      }}
-                    >
-                      <Text
-                        style={{
-                          color: "#74c3ed",
-                          fontSize: 14,
-                          textAlign: "center",
-                        }}
-                      >
-                        {hiLo(item.name)}
-                      </Text>
-                      <Text
-                        style={{
-                          color: "white",
-                          fontSize: 18,
-                          textAlign: "center",
-                        }}
-                      >
-                        {item.temperature}°
-                      </Text>
-                    </View>
-                  ) : (
-                    <View
-                      style={{
-                        justifyContent: "center",
-                        flex: 1,
-                      }}
-                    >
-                      <Text
-                        style={{
-                          color: "#74c3ed",
-                          fontSize: 14,
-                          color: "#b56969",
-                          textAlign: "center",
-                        }}
-                      >
-                        {hiLo(item.name)}
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 18,
-                          color: "white",
-                          textAlign: "center",
-                        }}
-                      >
-                        {item.temperature}°
-                      </Text>
-                    </View>
-                  )}
-                </View>
-                <View
-                  style={{
-                    marginBottom: 5,
+                    flexDirection: "column",
+                    backgroundColor: "rgba(0, 0, 0, 0.7)",
                     borderRadius: 10,
+                    marginBottom: 2,
                     padding: 5,
-                    paddingTop: 10,
+                    marginTop: 5,
+                    width: "95%",
                   }}
                 >
                   <View
                     style={{
-                      backgroundColor: "rgba(0, 0, 0, 0.5)",
-                      height: 3,
-                      width: "100%",
-                      marginBottom: 5,
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "space-between",
                     }}
-                  />
-                  <Text style={{ color: "white", fontSize: 14 }}>
-                    {item.detailedForecast}
-                  </Text>
+                  >
+                    <View
+                      style={{
+                        justifyContent: "center",
+                        flex: 0.75,
+                      }}
+                    >
+                      <Image
+                        style={{
+                          height: 50,
+                          width: 50,
+                        }}
+                        source={getIcon(item.icon)}
+                        alt="image"
+                      />
+                    </View>
+                    <View
+                      style={{
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flex: 1,
+                      }}
+                    >
+                      <Text
+                        style={{
+                          color: "white",
+                          fontSize: 14,
+                          textAlign: "center",
+                        }}
+                      >
+                        {item.name}
+                      </Text>
+                      <Text
+                        style={{
+                          color: "white",
+                          fontSize: 14,
+                          textAlign: "center",
+                        }}
+                      >
+                        {convertDate(item.startTime)}
+                      </Text>
+                    </View>
+                    <View
+                      style={{
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flex: 1.25,
+                      }}
+                    >
+                      <Text
+                        style={{
+                          color: "white",
+                          fontSize: 14,
+                          textAlign: "center",
+                        }}
+                      >
+                        {item.shortForecast}
+                      </Text>
+                    </View>
+
+                    {hiLo(item.name) === "Low" ? (
+                      <View
+                        style={{
+                          justifyContent: "center",
+                          flex: 1,
+                        }}
+                      >
+                        <Text
+                          style={{
+                            color: "#74c3ed",
+                            fontSize: 14,
+                            textAlign: "center",
+                          }}
+                        >
+                          {hiLo(item.name)}
+                        </Text>
+                        <Text
+                          style={{
+                            color: "white",
+                            fontSize: 18,
+                            textAlign: "center",
+                          }}
+                        >
+                          {item.temperature}°
+                        </Text>
+                      </View>
+                    ) : (
+                      <View
+                        style={{
+                          justifyContent: "center",
+                          flex: 1,
+                        }}
+                      >
+                        <Text
+                          style={{
+                            color: "#74c3ed",
+                            fontSize: 14,
+                            color: "#b56969",
+                            textAlign: "center",
+                          }}
+                        >
+                          {hiLo(item.name)}
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: 18,
+                            color: "white",
+                            textAlign: "center",
+                          }}
+                        >
+                          {item.temperature}°
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+                  <View
+                    style={{
+                      marginBottom: 5,
+                      borderRadius: 10,
+                      padding: 5,
+                      paddingTop: 10,
+                    }}
+                  >
+                    <View
+                      style={{
+                        backgroundColor: "rgba(0, 0, 0, 0.5)",
+                        height: 3,
+                        width: "100%",
+                        marginBottom: 5,
+                      }}
+                    />
+                    <Text style={{ color: "white", fontSize: 14 }}>
+                      {item.detailedForecast}
+                    </Text>
+                  </View>
                 </View>
               </View>
             </View>

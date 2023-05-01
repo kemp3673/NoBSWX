@@ -102,7 +102,10 @@ export default function Home() {
               Humidity
             </Text>
             <Text style={homeStyles.boldText} allowFontScaling={false}>
-              {currentObserved.relativeHumidity.value.toFixed(2) || 0}%
+              {currentObserved.relativeHumidity.value
+                ? currentObserved.relativeHumidity.value.toFixed(2)
+                : 0.0}
+              %
             </Text>
           </View>
         </View>
