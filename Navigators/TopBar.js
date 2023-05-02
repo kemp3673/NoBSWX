@@ -1,11 +1,19 @@
-import React, { useState, useEffect, Suspense } from "react";
+import React, { useState, useEffect, Suspense, useContext } from "react";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { Text, View, Button, StyleSheet } from "react-native";
 import * as Location from "expo-location";
 
 // Helpers
-import { getWXData } from "../utility/WeatherHelpers";
+import {
+  getWXData,
+  getWeatherStation,
+  getCurrentConditions,
+} from "../utility/WeatherHelpers";
+import { nightCheck } from "../utility/OtherHelpers";
+
+// Link context
+import { WeatherContext } from "../Context/WeatherContext";
 
 // Icons
 import { Ionicons } from "@expo/vector-icons";
@@ -25,7 +33,21 @@ import LocationChange from "../pages/LocationChange";
 
 const Tab = createMaterialTopTabNavigator();
 
-function MyTabs() {
+function MyTabs({
+  baseData,
+  isLoading,
+  setIsLoading,
+  setTempSplash,
+  location,
+  setLocation,
+  currentObserved,
+}) {
+  const context = useContext(WeatherContext);
+  // Check if it's night time and set the context
+  useEffect(() => {
+    context.setIsNight(new Date().getHours() > 18 || new Date().getHours() < 6);
+  }, []);
+
   return (
     <Tab.Navigator
       screenOptions={{
@@ -57,7 +79,13 @@ function MyTabs() {
           },
         }}
       >
-        {() => <LocationChange />}
+        {() => (
+          <LocationChange
+            isLoading={isLoading}
+            setIsLoading={setIsLoading}
+            setLocation={setLocation}
+          />
+        )}
       </Tab.Screen>
       <Tab.Screen
         name="Home"
@@ -74,7 +102,12 @@ function MyTabs() {
           },
         }}
       >
-        {() => <Home />}
+        {() => (
+          <Home
+            relativeLocation={baseData.relativeLocation}
+            currentObserved={currentObserved}
+          />
+        )}
       </Tab.Screen>
       <Tab.Screen
         name="Daily"
@@ -91,7 +124,7 @@ function MyTabs() {
           },
         }}
       >
-        {() => <DailyForecasts />}
+        {() => <DailyForecasts localForecastUrl={baseData.localForecastUrl} />}
       </Tab.Screen>
       <Tab.Screen
         name="Hourly"
@@ -108,7 +141,7 @@ function MyTabs() {
           },
         }}
       >
-        {() => <Hourly />}
+        {() => <Hourly hourlyForecastUrl={baseData.hourlyForecastUrl} />}
       </Tab.Screen>
       <Tab.Screen
         name="Radar"
@@ -129,7 +162,7 @@ function MyTabs() {
       >
         {() => (
           <React.Suspense fallback={<View />}>
-            <Radar />
+            <Radar location={location} />
           </React.Suspense>
         )}
       </Tab.Screen>
@@ -137,10 +170,18 @@ function MyTabs() {
   );
 }
 
-export default function App() {
+export default function App(props) {
   return (
     <NavigationContainer>
-      <MyTabs />
+      <MyTabs
+        setTempSplash={props.setTempSplash}
+        baseData={props.baseData}
+        isLoading={props.isLoading}
+        setIsLoading={props.setIsLoading}
+        location={props.location}
+        setLocation={props.setLocation}
+        currentObserved={props.currentObserved}
+      />
     </NavigationContainer>
   );
 }

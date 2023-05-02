@@ -62,6 +62,7 @@ const icons = {
   rain: rain,
 };
 
+// TODO Use switch with default to return icon
 /* isDayTime is in forecast data  (at least for weekly)*/
 export const getIcon = (url, night) => {
   // Split the url to grab the last part of the url
@@ -79,6 +80,6 @@ export const getIcon = (url, night) => {
   if (night || url.includes("night")) {
     return icons["n" + iconString] || icons[iconString];
   } else {
-    return icons[iconString];
+    return icons[iconString] || overcast;
   }
 };

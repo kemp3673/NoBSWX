@@ -30,12 +30,23 @@
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.FOREGROUND_SERVICE"
-      ]
+      ],
+      "package": "com.boxy_t.NoBSWx",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyBv6C9EosLp64FJi34MFe5fLoEJOJ6psaw"
+        }
+      }
+
     },
     "extra": {
       "eas": {
         "projectId": "3394ce77-2937-44b1-b65b-82cbea415f6c"
       }
     }
+  },
+  "react-native-google-mobile-ads": {
+    "androidAppId": "ca-app-pub-7186648467471890~8437973545",
+    "android_app_id": "ca-app-pub-7186648467471890~8437973545"
   }
 }

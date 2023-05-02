@@ -13,21 +13,21 @@ import { Fontisto } from "@expo/vector-icons";
 // import { AdMobBanner, setTestDeviceIDAsync } from "expo-ads-admob";
 
 // Context
-import { WeatherContext } from "../App";
+import { WeatherContext } from "../Context/WeatherContext";
 
 // Helpers
 import { getHourlyForecast } from "../utility/WeatherHelpers";
 import { convertTime } from "../utility/OtherHelpers";
 import { getIcon } from "../utility/IconHelpers";
 
-export default function Hourly() {
+export default function Hourly({ hourlyForecastUrl }) {
   const context = useContext(WeatherContext);
-  const adUnitID = "ca-app-pub-7186648467471890~8437973545";
+  const adUnitID = "ca-app-pub-3940256099942544/6300978111";
   const [hourlyForecast, setHourlyForecast] = useState(null);
 
   useEffect(() => {
-    if (context.hourlyForecastUrl) {
-      getHourlyForecast(context.hourlyForecastUrl)
+    if (hourlyForecastUrl) {
+      getHourlyForecast(hourlyForecastUrl)
         .then((data) => {
           setHourlyForecast(data);
         })
@@ -35,7 +35,7 @@ export default function Hourly() {
           console.log("Error: ", error);
         });
     }
-  }, [context.hourlyForecastUrl]);
+  }, [hourlyForecastUrl]);
 
   if (!hourlyForecast) {
     return (
@@ -72,19 +72,15 @@ export default function Hourly() {
           showsVerticalScrollIndicator={false}
           renderItem={({ item, index }) => (
             <View>
-              {(index + 1) % 10 == 0 ? (
-                // <AdMobBanner
-                //   bannerSize="smartBanner"
-                //   adUnitID={adUnitID}
-                //   onDidFailToReceiveAdWithError={(e) => console.log(e)}
-                // />
-                <View style={{ alignItems: "center" }}>
-                  <Image
-                    style={{ height: 50, resizeMode: "contain", marginTop: 5 }}
-                    source={require("../assets/fakeAd.png")}
+              {/* {(index + 1) % 10 == 0 ? (
+                <View style={{ alignItems: "center", marginTop: 5 }}>
+                  <AdMobBanner
+                    bannerSize="smartBanner"
+                    adUnitID={adUnitID}
+                    onDidFailToReceiveAdWithError={(e) => console.log(e)}
                   />
                 </View>
-              ) : null}
+              ) : null} */}
               <View
                 style={{
                   display: "flex",

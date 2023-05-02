@@ -26,10 +26,11 @@ import {
 // Styles
 import { locationStyles } from "../styles/styles";
 
-// Context
-import { WeatherContext } from "../App";
-
-export default function LocationChange() {
+export default function LocationChange({
+  isLoading,
+  setIsLoading,
+  setLocation,
+}) {
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [zipCode, setZipCode] = useState("");
@@ -44,10 +45,9 @@ export default function LocationChange() {
   }, []);
 
   const navigation = useNavigation();
-  const context = useContext(WeatherContext);
 
   const handleSubmit = () => {
-    context.setIsLoading(true);
+    setIsLoading(true);
     getLocation(zipCode)
       .then((data) => {
         // Save location to AsyncStorage
@@ -57,25 +57,25 @@ export default function LocationChange() {
           });
         });
         // Set location in context
-        context.setLocation({
+        setLocation({
           latitude: Number(data.latitude),
           longitude: Number(data.longitude),
         });
       })
       .catch((error) => {
-        context.setIsLoading(false);
+        setIsLoading(false);
         console.error(error);
         alert("There was a problem getting the weather. Please try again.");
       });
   };
 
   useEffect(() => {
-    if (context.isLoading === false) {
+    if (isLoading === false) {
       navigation.navigate("Home");
       setSelected(null);
       setZipCode("");
     }
-  }, [context.isLoading]);
+  }, [isLoading]);
 
   const handleDelete = (item) => {
     setTrashSelected(item);
@@ -96,8 +96,8 @@ export default function LocationChange() {
 
   const handleSelect = (item) => {
     setSelected(item);
-    context.setIsLoading(true);
-    context.setLocation({
+    setIsLoading(true);
+    setLocation({
       latitude: Number(item.latitude),
       longitude: Number(item.longitude),
     });
@@ -124,7 +124,7 @@ export default function LocationChange() {
       >
         {/* <View style={locationStyles.container} behavior="padding"> */}
         <Spinner
-          visible={context.isLoading}
+          visible={isLoading}
           textStyle={locationStyles.spinnerTextStyle}
         />
         <View style={locationStyles.queryWrapper}>

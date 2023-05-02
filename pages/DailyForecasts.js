@@ -9,20 +9,25 @@ import {
 } from "react-native";
 
 // Context
-import { WeatherContext } from "../App";
+import { WeatherContext } from "../Context/WeatherContext";
 
 // Helpers
 import { getForecast } from "../utility/WeatherHelpers";
 import { convertDate, hiLo } from "../utility/OtherHelpers";
 import { getIcon } from "../utility/IconHelpers";
 
-export default function DailyForecasts() {
+// Ads
+// import { AdMobBanner } from "expo-ads-admob";
+
+export default function DailyForecasts({ localForecastUrl }) {
   const context = useContext(WeatherContext);
   const [localForecast, setLocalForecast] = useState(null);
 
+  const adUnitID = "ca-app-pub-3940256099942544/6300978111";
+
   useEffect(() => {
-    if (context.localForecastUrl) {
-      getForecast(context.localForecastUrl)
+    if (localForecastUrl) {
+      getForecast(localForecastUrl)
         .then((data) => {
           setLocalForecast(data);
         })
@@ -30,7 +35,7 @@ export default function DailyForecasts() {
           console.log("Error: ", error);
         });
     }
-  }, [context.localForecastUrl]);
+  }, [localForecastUrl]);
 
   // Add precip % to the forecast
   if (!localForecast) {
@@ -69,19 +74,15 @@ export default function DailyForecasts() {
           style={{ width: "100%" }}
           renderItem={({ item, index }) => (
             <View>
-              {(index + 1) % 6 == 0 ? (
-                // <AdMobBanner
-                //   bannerSize="smartBanner"
-                //   adUnitID={adUnitID}
-                //   onDidFailToReceiveAdWithError={(e) => console.log(e)}
-                // />
-                <View style={{ alignItems: "center" }}>
-                  <Image
-                    style={{ height: 50, resizeMode: "contain", marginTop: 5 }}
-                    source={require("../assets/fakeAd2.png")}
+              {/* {(index + 1) % 6 == 0 ? (
+                <View style={{ alignItems: "center", marginTop: 5 }}>
+                  <AdMobBanner
+                    bannerSize="smartBanner"
+                    adUnitID={adUnitID}
+                    onDidFailToReceiveAdWithError={(e) => console.log(e)}
                   />
                 </View>
-              ) : null}
+              ) : null} */}
               <View
                 style={{
                   display: "flex",

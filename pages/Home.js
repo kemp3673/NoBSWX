@@ -17,7 +17,7 @@ import {
 import { homeStyles } from "../styles/styles";
 
 // Context
-import { WeatherContext } from "../App";
+import { WeatherContext } from "../Context/WeatherContext";
 
 // Helpers
 import {
@@ -35,13 +35,14 @@ import {
   convertMeters,
 } from "../utility/OtherHelpers";
 
-export default function Home() {
+export default function Home({
+  observationStations,
+  relativeLocation,
+  currentObserved,
+}) {
+  // Link context
   const context = useContext(WeatherContext);
-  const relativeLocation = context.relativeLocation;
-  const observationStations = context.observationStations;
-  const currentObserved = context.currentObserved;
-  const setCurrentObserved = context.setCurrentObserved;
-  const weatherStation = context.weatherStation;
+  // Local state
 
   if (currentObserved) {
     return (

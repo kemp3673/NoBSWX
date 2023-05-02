@@ -1,5 +1,6 @@
 import { SafeAreaView, View, Text, StatusBar, Image } from "react-native";
 import React, { useState, useEffect, createContext } from "react";
+import "expo-dev-client";
 import * as Location from "expo-location";
 
 // Styles
@@ -13,30 +14,35 @@ import {
 } from "./utility/WeatherHelpers";
 import { nightCheck } from "./utility/OtherHelpers";
 
+// Components
 import MyTabs from "./Navigators/TopBar";
 
-// Place context stuff in another file and import it to prevent require cycles
-export const WeatherContext = createContext(null);
+// Context Provider
+import { WeatherProvider } from "./Context/WeatherContext";
 
 export default function App() {
-  const [tempSplash, setTempSplash] = useState(true);
+  // Local state
   const [timerComplete, setTimerComplete] = useState(false);
-  const [isNight, setIsNight] = useState(false);
-  const [localForecastUrl, setLocalForecastUrl] = useState(null);
-  const [hourlyForecastUrl, setHourlyForecastUrl] = useState(null);
+  const [tempSplash, setTempSplash] = useState(true);
+
+  // State to be passed to children
+  const [baseData, setBaseData] = useState({
+    localForecastUrl: null,
+    hourlyForecastUrl: null,
+    zone: null,
+    relativeLocation: {
+      state: null,
+      city: null,
+    },
+    observationStations: null,
+  });
   const [location, setLocation] = useState({
     latitude: 40.7128,
     longitude: -74.0061,
   });
-  const [zone, setZone] = useState(null);
-  const [relativeLocation, setRelativeLocation] = useState({
-    state: null,
-    city: null,
-  });
-  const [observationStations, setObservationStations] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [weatherStation, setWeatherStation] = useState(null);
   const [currentObserved, setCurrentObserved] = useState(null);
+  const [weatherStation, setWeatherStation] = useState(null);
 
   // Get user location when app loads
   useEffect(() => {
@@ -46,7 +52,6 @@ export default function App() {
         console.error("Permission to access location was denied");
         return;
       }
-
       let userLocation = await Location.getCurrentPositionAsync({});
       setLocation({
         latitude: Number(userLocation.coords.latitude.toFixed(4)),
@@ -62,29 +67,36 @@ export default function App() {
       setTempSplash(false);
     }, 60000);
   }, []);
+
   // Get general weather data when location changes (URLs for forecast, hourly forecast, and observation stations)
   useEffect(() => {
     // Time out after 30 seconds
     setTimeout(() => {
       setIsLoading(false);
     }, 30000);
-    setIsNight(new Date().getHours() > 18 || new Date().getHours() < 6);
+    // setIsNight(new Date().getHours() > 18 || new Date().getHours() < 6);
     getWXData(location)
       .then((data) => {
-        setLocalForecastUrl(data.forecast);
-        setHourlyForecastUrl(data.hourlyForecast);
-        setRelativeLocation({ city: data.city, state: data.state });
-        setObservationStations(data.observationStations);
-        setZone(data.forecastZone);
+        setBaseData({
+          localForecastUrl: data.forecast,
+          hourlyForecastUrl: data.hourlyForecast,
+          zone: data.forecastZone,
+          relativeLocation: {
+            state: data.state,
+            city: data.city,
+          },
+          observationStations: data.observationStations,
+        });
       })
       .catch((error) => {
         console.log("Error: ", error);
       });
   }, [location]);
+
   // Once observation stations are loaded, get the closest station and set it as the weather station
   useEffect(() => {
-    if (observationStations) {
-      getWeatherStation(observationStations)
+    if (baseData.observationStations) {
+      getWeatherStation(baseData.observationStations)
         .then((data) => {
           setWeatherStation(data);
         })
@@ -92,9 +104,9 @@ export default function App() {
           console.log("Error: ", error);
         });
     }
-  }, [observationStations]);
+  }, [baseData.observationStations]);
+
   // Once weather station is loaded, get the current conditions and set them as currentObserved
-  // Have to do them here instead of in the home component to prevent the home component from showing up before the data is loaded
   useEffect(() => {
     let intervalId;
     if (weatherStation) {
@@ -138,28 +150,18 @@ export default function App() {
       />
     </View>
   ) : (
-    // Move all initial data loading to Home component to prevent circular dependencies. Will wait to render Home component until data is loaded and splash screen is removed. This will prevent the Home component from showing up before the data is loaded. Determine what needs to be stored globally and what can be stored locally or passed as props. For example, the current conditions can be stored globally, but the forecast can be passed as props to the Forecast component.
-    <WeatherContext.Provider
-      value={{
-        localForecastUrl,
-        setLocation,
-        hourlyForecastUrl,
-        location,
-        zone,
-        relativeLocation,
-        observationStations,
-        isNight,
-        isLoading,
-        setIsLoading,
-        currentObserved,
-        setCurrentObserved,
-        weatherStation,
-        setWeatherStation,
-      }}
-    >
+    <WeatherProvider>
       <SafeAreaView style={{ flex: 1 }}>
         <StatusBar style="auto" />
-        <MyTabs />
+        <MyTabs
+          setTempSplash={setTempSplash}
+          baseData={baseData}
+          isLoading={isLoading}
+          setIsLoading={setIsLoading}
+          location={location}
+          setLocation={setLocation}
+          currentObserved={currentObserved}
+        />
         <View style={AppStyles.footer}>
           <Text style={AppStyles.footerText}>Data Sourced from NOAA</Text>
           <Image
@@ -168,6 +170,6 @@ export default function App() {
           />
         </View>
       </SafeAreaView>
-    </WeatherContext.Provider>
+    </WeatherProvider>
   );
 }

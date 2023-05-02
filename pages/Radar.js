@@ -1,12 +1,17 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { StyleSheet, View, Text, Image, Platform } from "react-native";
-import MapView, { UrlTile, Marker } from "react-native-maps";
+import MapView, {
+  UrlTile,
+  Marker,
+  PROVIDER_GOOGLE,
+  Overlay,
+} from "react-native-maps";
 // Icons
 import { Entypo } from "@expo/vector-icons";
 // Styles
 import { RadarStyles } from "../styles/styles";
 // Context
-import { WeatherContext } from "../App";
+// import { WeatherContext } from "../App";
 
 const k = "8ec879ca39768d40c5ce53f1989bca64";
 
@@ -177,10 +182,8 @@ const getTileCoords = (zoom, center) => {
   return { x, y };
 };
 
-export default function Radar() {
+export default function Radar({ location }) {
   const mapRef = useRef(null);
-  const context = useContext(WeatherContext);
-  location = context.location;
 
   const [zoomLevel, setZoomLevel] = useState(0);
   const [center, setCenter] = useState({
@@ -192,7 +195,7 @@ export default function Radar() {
   const cloudsUrl = `https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=${k}`;
 
   const handleRegionChange = (region) => {
-    const { latitude, longitude, latitudeDelta } = region;
+    const { latitude, longitude, latitudeDelta, longitudeDelta } = region;
     const zoomLevel = Math.round(Math.log2(360 / latitudeDelta));
     const center = { latitude, longitude };
     setZoomLevel(zoomLevel);
@@ -205,6 +208,7 @@ export default function Radar() {
       {center.latitude !== 0 && center.longitude !== 0 && (
         <View style={{ position: "relative", flex: 1 }}>
           <MapView
+            provider={PROVIDER_GOOGLE}
             style={RadarStyles.map}
             region={{
               latitude: location.latitude,
@@ -216,7 +220,7 @@ export default function Radar() {
             showsCompass={true}
             loadingEnabled={true}
             showsScale={true}
-            mapType="mutedStandard"
+            // mapType="mutedStandard"
             userInterfaceStyle="dark"
             onRegionChange={handleRegionChange}
             customMapStyle={mapStyle}
