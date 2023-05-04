@@ -6,6 +6,8 @@ import {
   Image,
   FlatList,
   ImageBackground,
+  TouchableWithoutFeedback,
+  Animated,
 } from "react-native";
 
 // Context
@@ -16,15 +18,33 @@ import { getForecast } from "../utility/WeatherHelpers";
 import { convertDate, hiLo } from "../utility/OtherHelpers";
 import { getIcon } from "../utility/IconHelpers";
 
+// Icons
+import { Entypo } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
+
 // Ads
 // import { AdMobBanner } from "expo-ads-admob";
 
-export default function DailyForecasts({ localForecastUrl }) {
+export default function DailyForecasts({ localForecastUrl, alerts }) {
   const context = useContext(WeatherContext);
   const [localForecast, setLocalForecast] = useState(null);
+  // Toggle the alerts
+  const [showAlerts, setShowAlerts] = useState(false);
+  // Animation for the alerts
+  const fadeAnim = new Animated.Value(0);
 
   const adUnitID = "ca-app-pub-3940256099942544/6300978111";
 
+  // Handle the fade in animation for the alerts
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+  }, [fadeAnim]);
+
+  // Get the local forecast
   useEffect(() => {
     if (localForecastUrl) {
       getForecast(localForecastUrl)
@@ -74,6 +94,65 @@ export default function DailyForecasts({ localForecastUrl }) {
           style={{ width: "100%" }}
           renderItem={({ item, index }) => (
             <View>
+              {alerts && alerts.length > 0 && index == 0 ? (
+                <TouchableWithoutFeedback
+                  onPress={() => {
+                    setShowAlerts(!showAlerts);
+                  }}
+                >
+                  <Animated.View
+                    style={{
+                      opacity: fadeAnim,
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <View
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        backgroundColor: "rgba(0, 0, 0, 0.8)",
+                        borderRadius: 10,
+                        borderColor: "orange",
+                        borderWidth: 1,
+                        marginBottom: 2,
+                        padding: 5,
+                        marginTop: 5,
+                        width: "95%",
+                      }}
+                    >
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          fontWeight: "bold",
+                          textAlign: "center",
+                          color: "orange",
+                        }}
+                      >
+                        {showAlerts ? alerts[0].properties.event : "ALERT"}
+                      </Text>
+                      {showAlerts ? null : (
+                        <Entypo name="chevron-down" size={24} color="orange" />
+                      )}
+                      {showAlerts ? (
+                        <Text
+                          style={{
+                            fontSize: 12,
+                            fontWeight: "bold",
+                            padding: 5,
+                            textAlign: "center",
+                            color: "white",
+                          }}
+                        >
+                          {alerts[0].properties.description}
+                        </Text>
+                      ) : null}
+                    </View>
+                  </Animated.View>
+                </TouchableWithoutFeedback>
+              ) : null}
               {/* {(index + 1) % 6 == 0 ? (
                 <View style={{ alignItems: "center", marginTop: 5 }}>
                   <AdMobBanner

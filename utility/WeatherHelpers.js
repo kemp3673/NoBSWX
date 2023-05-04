@@ -13,6 +13,7 @@ export const getWXData = async (location) => {
           forecast: locationWX.properties.forecast,
           hourlyForecast: locationWX.properties.forecastHourly,
           forecastZone: locationWX.properties.forecastZone,
+          county: locationWX.properties.county,
         });
       })
       .catch((error) => {
@@ -79,24 +80,22 @@ export const getForecast = async (forecastUrl) => {
 };
 
 // Retrieves alerts for specified forecast zone
-export const getAlerts = async (forecastZone, callback) => {
-  // forecastZone is a string like "https://api.weather.gov/zones/forecast/TNZ006" located in data.properties.forecastZone (from getWXData) which contains the zoneID (TNZ006). This is needed to get the alerts.
-
-  let zoneID = forecastZone.split("/").pop();
-
-  await fetch(`https://api.weather.gov/alerts/active/zone/${zoneID}`)
-    .then((response) => response.json())
-    .then((data) => {
-      let alerts = data.features;
-      if (alerts.length > 0) {
-        return alerts;
-      } else {
-        return null;
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+export const getAlerts = async (zoneID) => {
+  return new Promise(async (resolve, reject) => {
+    await fetch(`https://api.weather.gov/alerts/active/zone/${zoneID}`)
+      .then((response) => response.json())
+      .then((data) => {
+        let alerts = data.features;
+        if (alerts.length > 0) {
+          resolve(alerts);
+        } else {
+          return null;
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  });
 };
 
 // Destructuring imports from utility/UtilityHelpers.js

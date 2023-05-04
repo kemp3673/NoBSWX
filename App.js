@@ -11,6 +11,7 @@ import {
   getWXData,
   getWeatherStation,
   getCurrentConditions,
+  getAlerts,
 } from "./utility/WeatherHelpers";
 import { nightCheck } from "./utility/OtherHelpers";
 
@@ -29,7 +30,7 @@ export default function App() {
   const [baseData, setBaseData] = useState({
     localForecastUrl: null,
     hourlyForecastUrl: null,
-    zone: null,
+    countyZone: null,
     relativeLocation: {
       state: null,
       city: null,
@@ -43,6 +44,7 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [currentObserved, setCurrentObserved] = useState(null);
   const [weatherStation, setWeatherStation] = useState(null);
+  const [alerts, setAlerts] = useState(null);
 
   // Get user location when app loads
   useEffect(() => {
@@ -70,6 +72,7 @@ export default function App() {
 
   // Get general weather data when location changes (URLs for forecast, hourly forecast, and observation stations)
   useEffect(() => {
+    setAlerts(null);
     // Time out after 30 seconds
     setTimeout(() => {
       setIsLoading(false);
@@ -77,21 +80,38 @@ export default function App() {
     // setIsNight(new Date().getHours() > 18 || new Date().getHours() < 6);
     getWXData(location)
       .then((data) => {
+        let county = data.county && data.county.split("/");
         setBaseData({
           localForecastUrl: data.forecast,
           hourlyForecastUrl: data.hourlyForecast,
-          zone: data.forecastZone,
           relativeLocation: {
             state: data.state,
             city: data.city,
           },
           observationStations: data.observationStations,
+          countyZone: county[county.length - 1],
         });
       })
       .catch((error) => {
         console.log("Error: ", error);
       });
   }, [location]);
+
+  // Get current Alerts
+  useEffect(() => {
+    if (!baseData.countyZone) return;
+    console.log("County ID in App.js (line 103): ", baseData.countyZone);
+    getAlerts(baseData.countyZone)
+      .then((data) => {
+        setAlerts(data);
+      })
+      .then(() => {
+        console.log("current Alerts in App.js (line 109): ", alerts);
+      })
+      .catch((error) => {
+        console.log("Error: ", error);
+      });
+  }, [baseData.countyZone]);
 
   // Once observation stations are loaded, get the closest station and set it as the weather station
   useEffect(() => {
@@ -161,6 +181,7 @@ export default function App() {
           location={location}
           setLocation={setLocation}
           currentObserved={currentObserved}
+          alerts={alerts}
         />
         <View style={AppStyles.footer}>
           <Text style={AppStyles.footerText}>Data Sourced from NOAA</Text>

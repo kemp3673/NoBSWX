@@ -55,8 +55,17 @@ export const homeStyles = StyleSheet.create({
     color: "white",
     fontSize: 24,
   },
-  currentTemp: { color: "white", fontSize: 72, padding: 10 },
-  currentDescription: { color: "white", fontSize: 42, padding: 10 },
+  currentTemp: {
+    color: "white",
+    fontSize: 64,
+    padding: 5,
+  },
+  currentDescription: {
+    flexDirection: "column",
+    color: "white",
+    fontSize: 32,
+    padding: 5,
+  },
   time: {
     fontWeight: "bold",
     color: "white",
@@ -67,7 +76,7 @@ export const homeStyles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: 10,
+    padding: 5,
     width: "100%",
     maxWidth: 600,
   },
@@ -75,6 +84,20 @@ export const homeStyles = StyleSheet.create({
     height: 100,
     width: 100,
     resizeMode: "contain",
+  },
+  alertText: {
+    color: "white",
+    textAlign: "center",
+    fontSize: 14,
+    padding: 5,
+  },
+  alertWrapper: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 5,
+    width: "100%",
+    maxWidth: 600,
   },
 });
 

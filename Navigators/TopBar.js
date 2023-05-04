@@ -41,6 +41,7 @@ function MyTabs({
   location,
   setLocation,
   currentObserved,
+  alerts,
 }) {
   const context = useContext(WeatherContext);
   // Check if it's night time and set the context
@@ -106,6 +107,7 @@ function MyTabs({
           <Home
             relativeLocation={baseData.relativeLocation}
             currentObserved={currentObserved}
+            alerts={alerts}
           />
         )}
       </Tab.Screen>
@@ -124,7 +126,12 @@ function MyTabs({
           },
         }}
       >
-        {() => <DailyForecasts localForecastUrl={baseData.localForecastUrl} />}
+        {() => (
+          <DailyForecasts
+            localForecastUrl={baseData.localForecastUrl}
+            alerts={alerts}
+          />
+        )}
       </Tab.Screen>
       <Tab.Screen
         name="Hourly"
@@ -181,6 +188,7 @@ export default function App(props) {
         location={props.location}
         setLocation={props.setLocation}
         currentObserved={props.currentObserved}
+        alerts={props.alerts}
       />
     </NavigationContainer>
   );

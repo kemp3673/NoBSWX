@@ -26,6 +26,9 @@ import {
 } from "../utility/WeatherHelpers";
 import { getIcon } from "../utility/IconHelpers";
 
+// Icons
+import { Ionicons } from "@expo/vector-icons";
+
 import {
   nightCheck,
   convertTemp,
@@ -39,6 +42,7 @@ export default function Home({
   observationStations,
   relativeLocation,
   currentObserved,
+  alerts,
 }) {
   // Link context
   const context = useContext(WeatherContext);
@@ -57,17 +61,30 @@ export default function Home({
         <View style={homeStyles.innerWrapper}>
           <View>
             <Text style={homeStyles.currentTemp} allowFontScaling={false}>
-              {convertTemp(currentObserved.temperature.value)}
+              {currentObserved.temperature.value
+                ? convertTemp(currentObserved.temperature.value)
+                : "N/A"}
             </Text>
           </View>
-          <Text style={homeStyles.currentDescription} allowFontScaling={false}>
-            {currentObserved.textDescription}
-          </Text>
           <Image
             style={homeStyles.currentIcon}
             source={getIcon(currentObserved.icon, context.isNight)}
             alt="weather icon"
           />
+          <Text style={homeStyles.currentDescription} allowFontScaling={false}>
+            {currentObserved.textDescription
+              ? currentObserved.textDescription
+              : "Unable to get current conditions"}
+          </Text>
+          {alerts !== null ? (
+            <View style={homeStyles.alertWrapper}>
+              <Ionicons name="alert-circle" size={24} color="orange" />
+              <Text style={homeStyles.alertText} allowFontScaling={false}>
+                {"\n"}
+                {alerts[0].properties.headline}
+              </Text>
+            </View>
+          ) : null}
           <Text style={homeStyles.time} allowFontScaling={false}>
             {currentTime()}
           </Text>
@@ -79,7 +96,10 @@ export default function Home({
               Visibility
             </Text>
             <Text style={homeStyles.boldText} allowFontScaling={false}>
-              {convertMeters(currentObserved.visibility.value)} miles
+              {currentObserved.visibility.value
+                ? convertMeters(currentObserved.visibility.value)
+                : "Unknown"}{" "}
+              miles
             </Text>
           </View>
           <View style={homeStyles.conditionsWrapper}>
@@ -87,7 +107,10 @@ export default function Home({
               Wind Speed
             </Text>
             <Text style={homeStyles.boldText} allowFontScaling={false}>
-              {convertKM(currentObserved.windSpeed.value)} mph
+              {currentObserved.windSpeed.value
+                ? convertKM(currentObserved.windSpeed.value)
+                : 0.0}{" "}
+              mph
             </Text>
           </View>
           <View style={homeStyles.conditionsWrapper}>
@@ -95,7 +118,9 @@ export default function Home({
               Wind Direction
             </Text>
             <Text style={homeStyles.boldText} allowFontScaling={false}>
-              {convertDirection(currentObserved.windDirection.value)}
+              {currentObserved.windDirection.value
+                ? convertDirection(currentObserved.windDirection.value)
+                : "N/A"}
             </Text>
           </View>
           <View style={homeStyles.conditionsWrapper}>
