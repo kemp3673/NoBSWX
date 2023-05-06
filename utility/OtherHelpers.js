@@ -83,6 +83,9 @@ export const convertMeters = (meters) => {
 
 // Convert wind direction from degrees to cardinal direction
 export const convertDirection = (degrees) => {
+  if (typeof Number(degrees) !== "number") {
+    return degrees;
+  }
   switch (degrees) {
     case degrees >= 348.75 || degrees <= 11.25:
       return "N";

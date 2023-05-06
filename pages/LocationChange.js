@@ -30,6 +30,7 @@ export default function LocationChange({
   isLoading,
   setIsLoading,
   setLocation,
+  relativeLocation,
 }) {
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
@@ -95,6 +96,11 @@ export default function LocationChange({
   };
 
   const handleSelect = (item) => {
+    // let name = item.name.split(", ");
+    // if (name[0] == relativeLocation.city && name[1] == relativeLocation.state) {
+    //   alert("You are already viewing this location.");
+    //   return;
+    // }
     setSelected(item);
     setIsLoading(true);
     setLocation({
@@ -169,11 +175,27 @@ export default function LocationChange({
                 <View style={locationStyles.location}>
                   <Text
                     style={{
-                      color: selected === item ? "#74c3ed" : "white",
+                      color:
+                        // Color of selected location
+                        selected === item
+                          ? "#74c3ed"
+                          : // Color if location is current location
+                          item.name.split(", ")[0] == relativeLocation.city &&
+                            item.name.split(", ")[1] == relativeLocation.state
+                          ? "#ababab"
+                          : // Color of other locations
+                            "white",
                     }}
-                    // style={locationStyles.text}
+                    // Disable onPress if location is current location to prevent re-render or hanging on loading screen
                     onPress={() => {
-                      handleSelect(item);
+                      if (
+                        item.name.split(", ")[0] == relativeLocation.city &&
+                        item.name.split(", ")[1] == relativeLocation.state
+                      ) {
+                        return;
+                      } else {
+                        handleSelect(item);
+                      }
                     }}
                   >
                     {item.name.split(",")[0]}
@@ -195,7 +217,6 @@ export default function LocationChange({
             />
           )}
         </View>
-        {/* </View> */}
       </KeyboardAvoidingView>
     </ImageBackground>
   );

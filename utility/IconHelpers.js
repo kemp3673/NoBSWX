@@ -45,6 +45,7 @@ const icons = {
   nsn: snow,
   wind: windy,
   nwind: windy,
+  wind_few: windy,
   hi_shwrs: rain,
   hi_nshwrs: rain,
   fzrara: sleet,

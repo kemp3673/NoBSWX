@@ -2,6 +2,7 @@ import React, { useState, useEffect, Suspense, useContext } from "react";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { Text, View, Button, StyleSheet } from "react-native";
+import Spinner from "react-native-loading-spinner-overlay";
 import * as Location from "expo-location";
 
 // Helpers
@@ -24,10 +25,13 @@ import {
   AntDesign,
 } from "@expo/vector-icons";
 
+// Styles
+// import { locationStyles } from "../styles/styles";
+
 // Components
 import Home from "../pages/Home";
-import DailyForecasts from "../pages/DailyForecasts";
-import Hourly from "../pages/Hourly";
+const DailyForecasts = React.lazy(() => import("../pages/DailyForecasts"));
+const Hourly = React.lazy(() => import("../pages/Hourly"));
 const Radar = React.lazy(() => import("../pages/Radar"));
 import LocationChange from "../pages/LocationChange";
 
@@ -85,6 +89,7 @@ function MyTabs({
             isLoading={isLoading}
             setIsLoading={setIsLoading}
             setLocation={setLocation}
+            relativeLocation={baseData.relativeLocation}
           />
         )}
       </Tab.Screen>
@@ -127,10 +132,23 @@ function MyTabs({
         }}
       >
         {() => (
-          <DailyForecasts
-            localForecastUrl={baseData.localForecastUrl}
-            alerts={alerts}
-          />
+          <React.Suspense
+            fallback={
+              <Spinner
+                textStyle={{
+                  color: "#012f47",
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                }}
+              />
+            }
+          >
+            <DailyForecasts
+              localForecastUrl={baseData.localForecastUrl}
+              alerts={alerts}
+            />
+          </React.Suspense>
         )}
       </Tab.Screen>
       <Tab.Screen
@@ -148,7 +166,22 @@ function MyTabs({
           },
         }}
       >
-        {() => <Hourly hourlyForecastUrl={baseData.hourlyForecastUrl} />}
+        {() => (
+          <React.Suspense
+            fallback={
+              <Spinner
+                textStyle={{
+                  color: "#012f47",
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                }}
+              />
+            }
+          >
+            <Hourly hourlyForecastUrl={baseData.hourlyForecastUrl} />
+          </React.Suspense>
+        )}
       </Tab.Screen>
       <Tab.Screen
         name="Radar"
@@ -168,7 +201,18 @@ function MyTabs({
         }}
       >
         {() => (
-          <React.Suspense fallback={<View />}>
+          <React.Suspense
+            fallback={
+              <Spinner
+                textStyle={{
+                  color: "#012f47",
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                }}
+              />
+            }
+          >
             <Radar location={location} />
           </React.Suspense>
         )}

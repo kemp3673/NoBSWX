@@ -22,10 +22,15 @@ import { getIcon } from "../utility/IconHelpers";
 
 export default function Hourly({ hourlyForecastUrl }) {
   const context = useContext(WeatherContext);
-  const adUnitID = "ca-app-pub-3940256099942544/6300978111";
+  const adUnitID = __DEV__
+    ? "ca-app-pub-3940256099942544/6300978111"
+    : "ca-app-pub-7186648467471890~8437973545";
   const [hourlyForecast, setHourlyForecast] = useState(null);
 
   useEffect(() => {
+    // Initially clear the hourly forecast state
+    setHourlyForecast(null);
+    // If the hourly forecast url is passed in, get the hourly forecast
     if (hourlyForecastUrl) {
       getHourlyForecast(hourlyForecastUrl)
         .then((data) => {
@@ -46,6 +51,7 @@ export default function Hourly({ hourlyForecastUrl }) {
     );
   } else {
     return (
+      // Break Sections out into their own components for readability and reusability as well as to reduce some of the unneeded code (e.g. repeated calls to convertTime when I can just do it once in the component and save to a variable)
       <ImageBackground
         source={{
           uri: context.isNight
@@ -112,7 +118,6 @@ export default function Hourly({ hourlyForecastUrl }) {
                         fontSize: 18,
                       }}
                     >
-                      {/* TODO find way to make this more efficient instead of calling every time */}
                       {convertTime(item.startTime).day}
                       {", "}
                       {convertTime(item.startTime).month}{" "}

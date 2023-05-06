@@ -29,11 +29,13 @@ export default function DailyForecasts({ localForecastUrl, alerts }) {
   const context = useContext(WeatherContext);
   const [localForecast, setLocalForecast] = useState(null);
   // Toggle the alerts
-  const [showAlerts, setShowAlerts] = useState(false);
+  const [openAlert, setOpenAlert] = useState(null);
   // Animation for the alerts
   const fadeAnim = new Animated.Value(0);
 
-  const adUnitID = "ca-app-pub-3940256099942544/6300978111";
+  const adUnitID = __DEV__
+    ? "ca-app-pub-3940256099942544/6300978111"
+    : "ca-app-pub-7186648467471890~8437973545";
 
   // Handle the fade in animation for the alerts
   useEffect(() => {
@@ -46,6 +48,9 @@ export default function DailyForecasts({ localForecastUrl, alerts }) {
 
   // Get the local forecast
   useEffect(() => {
+    // Initially clear the daily forecast state
+    setLocalForecast(null);
+    // If the local forecast url is passed in, get the local forecast
     if (localForecastUrl) {
       getForecast(localForecastUrl)
         .then((data) => {
@@ -56,6 +61,78 @@ export default function DailyForecasts({ localForecastUrl, alerts }) {
         });
     }
   }, [localForecastUrl]);
+
+  const createAlerts = (currentAlert, index) => {
+    return (
+      <TouchableWithoutFeedback
+        key={`${index} ${currentAlert.properties.event}`}
+        onPress={() => {
+          if (openAlert) {
+            if (openAlert == currentAlert) {
+              setOpenAlert(null);
+            } else {
+              setOpenAlert(currentAlert);
+            }
+          } else {
+            setOpenAlert(currentAlert);
+          }
+        }}
+      >
+        <Animated.View
+          style={{
+            // TODO - Implement grow and shrink instead of fade in and out
+            // opacity: fadeAnim,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <View
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "rgba(0, 0, 0, 0.8)",
+              borderRadius: 10,
+              borderColor: "orange",
+              borderWidth: 1,
+              marginBottom: 2,
+              padding: 5,
+              marginTop: 5,
+              width: "95%",
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 14,
+                fontWeight: "bold",
+                textAlign: "center",
+                color: "orange",
+              }}
+            >
+              {currentAlert.properties.event}
+            </Text>
+            {openAlert == currentAlert ? null : (
+              <Entypo name="chevron-down" size={24} color="orange" />
+            )}
+            {openAlert == currentAlert ? (
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontWeight: "bold",
+                  padding: 5,
+                  textAlign: "center",
+                  color: "white",
+                }}
+              >
+                {currentAlert.properties.description}
+              </Text>
+            ) : null}
+          </View>
+        </Animated.View>
+      </TouchableWithoutFeedback>
+    );
+  };
 
   // Add precip % to the forecast
   if (!localForecast) {
@@ -94,65 +171,12 @@ export default function DailyForecasts({ localForecastUrl, alerts }) {
           style={{ width: "100%" }}
           renderItem={({ item, index }) => (
             <View>
-              {alerts && alerts.length > 0 && index == 0 ? (
-                <TouchableWithoutFeedback
-                  onPress={() => {
-                    setShowAlerts(!showAlerts);
-                  }}
-                >
-                  <Animated.View
-                    style={{
-                      opacity: fadeAnim,
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <View
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        backgroundColor: "rgba(0, 0, 0, 0.8)",
-                        borderRadius: 10,
-                        borderColor: "orange",
-                        borderWidth: 1,
-                        marginBottom: 2,
-                        padding: 5,
-                        marginTop: 5,
-                        width: "95%",
-                      }}
-                    >
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          fontWeight: "bold",
-                          textAlign: "center",
-                          color: "orange",
-                        }}
-                      >
-                        {showAlerts ? alerts[0].properties.event : "ALERT"}
-                      </Text>
-                      {showAlerts ? null : (
-                        <Entypo name="chevron-down" size={24} color="orange" />
-                      )}
-                      {showAlerts ? (
-                        <Text
-                          style={{
-                            fontSize: 12,
-                            fontWeight: "bold",
-                            padding: 5,
-                            textAlign: "center",
-                            color: "white",
-                          }}
-                        >
-                          {alerts[0].properties.description}
-                        </Text>
-                      ) : null}
-                    </View>
-                  </Animated.View>
-                </TouchableWithoutFeedback>
-              ) : null}
+              {/* Do this for all alerts in array */}
+              {alerts && alerts.length > 0 && index == 0
+                ? alerts.map((alert, index) => {
+                    return createAlerts(alert, index);
+                  })
+                : null}
               {/* {(index + 1) % 6 == 0 ? (
                 <View style={{ alignItems: "center", marginTop: 5 }}>
                   <AdMobBanner
@@ -319,7 +343,16 @@ export default function DailyForecasts({ localForecastUrl, alerts }) {
                         marginBottom: 5,
                       }}
                     />
-                    <Text style={{ color: "white", fontSize: 14 }}>
+                    <Text
+                      style={{
+                        color: "white",
+                        fontSize: 14,
+                        textAlign:
+                          item.detailedForecast.length > 100
+                            ? "left"
+                            : "center",
+                      }}
+                    >
                       {item.detailedForecast}
                     </Text>
                   </View>

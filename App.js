@@ -37,10 +37,7 @@ export default function App() {
     },
     observationStations: null,
   });
-  const [location, setLocation] = useState({
-    latitude: 40.7128,
-    longitude: -74.0061,
-  });
+  const [location, setLocation] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [currentObserved, setCurrentObserved] = useState(null);
   const [weatherStation, setWeatherStation] = useState(null);
@@ -51,6 +48,10 @@ export default function App() {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
+        setLocation({
+          latitude: 40.7128,
+          longitude: -74.0061,
+        });
         console.error("Permission to access location was denied");
         return;
       }
@@ -67,17 +68,18 @@ export default function App() {
     // Clear splash screen after 60 seconds (in case data fails to load)
     setTimeout(() => {
       setTempSplash(false);
-    }, 60000);
+    }, 30000);
   }, []);
 
   // Get general weather data when location changes (URLs for forecast, hourly forecast, and observation stations)
   useEffect(() => {
+    if (!location.latitude) return;
     setAlerts(null);
     // Time out after 30 seconds
     setTimeout(() => {
       setIsLoading(false);
     }, 30000);
-    // setIsNight(new Date().getHours() > 18 || new Date().getHours() < 6);
+
     getWXData(location)
       .then((data) => {
         let county = data.county && data.county.split("/");
@@ -100,13 +102,9 @@ export default function App() {
   // Get current Alerts
   useEffect(() => {
     if (!baseData.countyZone) return;
-    console.log("County ID in App.js (line 103): ", baseData.countyZone);
     getAlerts(baseData.countyZone)
       .then((data) => {
         setAlerts(data);
-      })
-      .then(() => {
-        console.log("current Alerts in App.js (line 109): ", alerts);
       })
       .catch((error) => {
         console.log("Error: ", error);

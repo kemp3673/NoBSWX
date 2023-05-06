@@ -80,8 +80,9 @@ export default function Home({
             <View style={homeStyles.alertWrapper}>
               <Ionicons name="alert-circle" size={24} color="orange" />
               <Text style={homeStyles.alertText} allowFontScaling={false}>
-                {"\n"}
-                {alerts[0].properties.headline}
+                {alerts.length > 1
+                  ? `${alerts.length} ALERTS IN YOUR AREA`
+                  : alerts[0].properties.headline}
               </Text>
             </View>
           ) : null}
