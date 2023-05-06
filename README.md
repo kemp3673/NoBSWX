@@ -26,12 +26,9 @@ React Native Weather Application
   <tr>
     <td><strong>Weather Warnings for location as soon as app loads</strong></td>
     <td><strong>Expandable warnings component</strong></td>
-    <td><strong>Expanded further information on warnings</strong></td>
   </tr>
   <tr>
      <td><img src="https://user-images.githubusercontent.com/102747919/236123685-9b485e2f-7272-4bef-bb46-47fbb111e929.png" width=200 /><p>Generalized weather alert will be provided on main screen of app to provide the user immediate knowledge of possible dangerous weather conditions.</p></td>
-    <td><img src="https://user-images.githubusercontent.com/102747919/236123714-e3bce1c9-5c3d-46be-99e2-f224d52bcdef.png" width=200 /><p>On the forecast screen, an expandable component can be found to provide more information to the user on the current warning(s)</p></td>
-    <td><img src="https://user-images.githubusercontent.com/102747919/236123743-43990aa9-cfd6-4552-922a-9ca37be9f8fc.png" width=200/><p>Expanded Warnings to provide full description of the current warnings from the National Weather Service</p></td>
+    <td><img src="https://user-images.githubusercontent.com/102747919/236602689-fda8c7eb-fa6a-4e16-93a0-22a65e6a4136.png" width=200 /><p>On the forecast screen, an expandable component can be found to provide more information to the user on the current warning(s)</p></td>
   </tr>
  </table>
- 
