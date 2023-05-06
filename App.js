@@ -27,16 +27,7 @@ export default function App() {
   const [tempSplash, setTempSplash] = useState(true);
 
   // State to be passed to children
-  const [baseData, setBaseData] = useState({
-    localForecastUrl: null,
-    hourlyForecastUrl: null,
-    countyZone: null,
-    relativeLocation: {
-      state: null,
-      city: null,
-    },
-    observationStations: null,
-  });
+  const [baseData, setBaseData] = useState({});
   const [location, setLocation] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [currentObserved, setCurrentObserved] = useState(null);

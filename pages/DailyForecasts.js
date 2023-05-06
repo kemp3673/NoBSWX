@@ -23,7 +23,7 @@ import { Entypo } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 
 // Ads
-// import { AdMobBanner } from "expo-ads-admob";
+import { AdMobBanner } from "expo-ads-admob";
 
 export default function DailyForecasts({ localForecastUrl, alerts }) {
   const context = useContext(WeatherContext);
@@ -177,7 +177,7 @@ export default function DailyForecasts({ localForecastUrl, alerts }) {
                     return createAlerts(alert, index);
                   })
                 : null}
-              {/* {(index + 1) % 6 == 0 ? (
+              {(index + 1) % 6 == 0 ? (
                 <View style={{ alignItems: "center", marginTop: 5 }}>
                   <AdMobBanner
                     bannerSize="smartBanner"
@@ -185,7 +185,7 @@ export default function DailyForecasts({ localForecastUrl, alerts }) {
                     onDidFailToReceiveAdWithError={(e) => console.log(e)}
                   />
                 </View>
-              ) : null} */}
+              ) : null}
               <View
                 style={{
                   display: "flex",

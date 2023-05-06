@@ -183,8 +183,8 @@ const getTileCoords = (zoom, center) => {
 };
 
 export default function Radar({ location }) {
+  location = location || { latitude: 40.7128, longitude: -74.0061 };
   const mapRef = useRef(null);
-
   const [zoomLevel, setZoomLevel] = useState(0);
   const [center, setCenter] = useState({
     latitude: location.latitude,

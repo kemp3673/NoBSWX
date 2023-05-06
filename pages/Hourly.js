@@ -10,7 +10,7 @@ import {
 import { Fontisto } from "@expo/vector-icons";
 
 // Ads
-// import { AdMobBanner, setTestDeviceIDAsync } from "expo-ads-admob";
+import { AdMobBanner, setTestDeviceIDAsync } from "expo-ads-admob";
 
 // Context
 import { WeatherContext } from "../Context/WeatherContext";
@@ -77,16 +77,16 @@ export default function Hourly({ hourlyForecastUrl }) {
           data={hourlyForecast}
           showsVerticalScrollIndicator={false}
           renderItem={({ item, index }) => (
-            <View>
-              {/* {(index + 1) % 10 == 0 ? (
-                <View style={{ alignItems: "center", marginTop: 5 }}>
+            <View style={{ alignItems: "center" }}>
+              {(index + 1) % 10 == 0 ? (
+                <View style={{ marginTop: 5 }}>
                   <AdMobBanner
                     bannerSize="smartBanner"
                     adUnitID={adUnitID}
                     onDidFailToReceiveAdWithError={(e) => console.log(e)}
                   />
                 </View>
-              ) : null} */}
+              ) : null}
               <View
                 style={{
                   display: "flex",
