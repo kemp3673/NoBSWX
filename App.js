@@ -21,6 +21,7 @@ import MyTabs from "./Navigators/TopBar";
 // Context Provider
 import { WeatherProvider } from "./Context/WeatherContext";
 
+// TODO - Track bug on why sometimes state is not sent to children on update (i.e. when location changes)
 export default function App() {
   // Local state
   const [timerComplete, setTimerComplete] = useState(false);
