@@ -1,5 +1,10 @@
 # NoBSWX
-React Native Weather Application
+<div align=center>
+  <h1>
+    React Native Weather Application
+  </h1>
+  <img src="https://github.com/kemp3673/NoBSWX/assets/102747919/16c7f5e1-e10a-4c24-b11a-d35f6341ca67" width=200 />
+</div>
 
 
 
